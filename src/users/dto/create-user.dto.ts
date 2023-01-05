@@ -17,7 +17,7 @@ export class CreateUserDto {
   readonly fullName: string;
 
   @IsString({ message: 'photoURL must be a string' })
-  readonly photoUrl: string;
+  readonly photoUrl?: string;
 
   @IsNotEmpty({ message: 'email cannot be empty' })
   @IsEmail(
