@@ -8,6 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Match } from 'src/core/constraints/match.decorator';
+import { UserRole } from '../enum/user.role';
 
 import { UserAddressDTO } from './user-address.dto';
 
@@ -47,4 +48,6 @@ export class CreateUserDto {
   @ValidateNested()
   @Type(() => UserAddressDTO)
   readonly address: UserAddressDTO;
+
+  readonly role: UserRole;
 }
