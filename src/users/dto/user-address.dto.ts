@@ -31,6 +31,6 @@ export class UserAddressDTO {
     @IsString({ message: 'state must be a string' })
     readonly state: string;
 
-    @IsString({ message: 'string must be a string' })
+    @IsString({ message: 'complement must be a string' })
     readonly complement: string;
 }
