@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserEntity } from "./user.entity";
 
 @Entity({name: 'adresses'})
@@ -12,8 +12,8 @@ export class AddressEntity {
     @Column({length: 100, nullable: false})
     street: string;
 
-    @Column({length: 10, nullable: false})
-    number: string;
+    @Column({nullable: false})
+    number: number;
 
     @Column({length: 100, nullable: false})
     neighborhood: string;
