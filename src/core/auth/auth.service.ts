@@ -1,4 +1,4 @@
-import { HttpCode, HttpException, HttpStatus, Inject, Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -19,7 +19,7 @@ export class AuthService {
 
     async signUp(createUserDto: CreateUserDto): Promise<UserEntity> {
         if (createUserDto.password != createUserDto.passwordConfirmation) {
-            throw new UnprocessableEntityException('passwords do not match')
+            throw new UnprocessableEntityException('Passwords do not match')
         }
         return await this.createUser(createUserDto)
     }
@@ -27,7 +27,7 @@ export class AuthService {
     async signIn(credentials: CredentialsDTO) {
         const user = await this.checkCredentials(credentials);
         if (user === null) {
-            throw new UnauthorizedException('E-mail e/ou senha incorretos')
+            throw new UnauthorizedException('Incorrect email or password')
         }
 
         const jwtPayload = {
