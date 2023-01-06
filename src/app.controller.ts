@@ -1,5 +1,6 @@
 import { Body, Controller, HttpException, HttpStatus, Post, ValidationPipe } from "@nestjs/common";
 import { AuthService } from "./core/auth/auth.service";
+import { CredentialsDTO } from "./core/auth/dto/credentials.dto";
 import { CreateUserDto } from "./users/dto/create-user.dto";
 
 @Controller()
@@ -21,5 +22,11 @@ export class AppController {
             }                 
             throw new HttpException({ reason: error }, HttpStatus.BAD_REQUEST);
         }        
+    }
+
+    @Post('/auth/signin')
+    async signIn(@Body(ValidationPipe) credentialsDto: CredentialsDTO
+    ) {
+      return await this.authService.signIn(credentialsDto);
     }
 }
