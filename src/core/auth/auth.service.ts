@@ -5,18 +5,21 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { CredentialsDTO } from './dto/credentials.dto';
+import { AddressEntity } from 'src/users/entities/address.entity';
 
 @Injectable()
 export class AuthService {
 
     constructor(private jwtService: JwtService,
         @Inject('USER_REPOSITORY')
-        private userRepository: Repository<UserEntity>
+        private userRepository: Repository<UserEntity>,
+        @Inject('ADDRESS_REPOSITORY')
+        private addressRepository: Repository<AddressEntity>
         ) {}
 
     async signUp(createUserDto: CreateUserDto): Promise<UserEntity> {
         if (createUserDto.password != createUserDto.passwordConfirmation) {
-            throw new UnprocessableEntityException('As senhas não conferem.')
+            throw new UnprocessableEntityException('passwords do not match')
         }
         return await this.createUser(createUserDto)
     }
@@ -38,11 +41,24 @@ export class AuthService {
     }
 
     createUser(createUser: CreateUserDto): Promise<UserEntity> {
-        return new Promise(async (resolve) => {            
-            const { email, fullName, password, role } = createUser;
-            const user = this.userRepository.create()
-            user.email = email;
+        return new Promise(async (resolve) => {              
+            const { fullName, photoUrl, email, password, phone, address, role } = createUser;
+            
+            const createAddress = this.addressRepository.create();
+            createAddress.zipCode = address.zipCode;
+            createAddress.street = address.street;
+            createAddress.number = address.number;
+            createAddress.neighborhood = address.neighborhood;            
+            createAddress.city = address.city;
+            createAddress.state = address.state;
+            createAddress.complement = address.complement;
+
+            const user = this.userRepository.create();
             user.fullName = fullName;
+            photoUrl.length > 0 ? user.photoUrl = photoUrl : user.photoUrl = "url da foto";            ;
+            user.email = email;
+            user.phone = phone;  
+            user.address = createAddress;      
             user.active = true;
             user.role = role;
             user.salt = await bcrypt.genSalt(12);
@@ -71,7 +87,7 @@ export class AuthService {
         return null;
     }
 
-    private async hashPassword(password: string, salt: string): Promise<string> {
+    async hashPassword(password: string, salt: string): Promise<string> {
         return bcrypt.hash(password, salt);
     }
 
@@ -93,5 +109,4 @@ export class AuthService {
     decodedToken(jwtToken: string) {
         return this.jwtService.decode(jwtToken);
     }
-
 }

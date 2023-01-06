@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
-import { AuthModule } from './core/auth/auth.module';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { databaseProviders } from './core/database/database.providers';
+import { userProviders } from './users/users.providers';
+import { AuthService } from './core/auth/auth.service';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -13,10 +16,13 @@ import { JwtModule } from '@nestjs/jwt';
       }
     }),
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
-    UsersModule,
-    AuthModule,
+    UsersModule
   ],
-  controllers: [],
-  providers: [],
+  controllers: [AppController],
+  providers: [
+    ...databaseProviders,
+    ...userProviders,
+    AuthService   
+  ],
 })
 export class AppModule { }
