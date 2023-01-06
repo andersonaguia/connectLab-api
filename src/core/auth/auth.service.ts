@@ -1,4 +1,4 @@
-import { Inject, Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
+import { HttpCode, HttpException, HttpStatus, Inject, Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -15,7 +15,7 @@ export class AuthService {
         private userRepository: Repository<UserEntity>,
         @Inject('ADDRESS_REPOSITORY')
         private addressRepository: Repository<AddressEntity>
-        ) {}
+    ) { }
 
     async signUp(createUserDto: CreateUserDto): Promise<UserEntity> {
         if (createUserDto.password != createUserDto.passwordConfirmation) {
@@ -41,34 +41,39 @@ export class AuthService {
     }
 
     createUser(createUser: CreateUserDto): Promise<UserEntity> {
-        return new Promise(async (resolve) => {              
-            const { fullName, photoUrl, email, password, phone, address, role } = createUser;
-            
-            const createAddress = this.addressRepository.create();
-            createAddress.zipCode = address.zipCode;
-            createAddress.street = address.street;
-            createAddress.number = address.number;
-            createAddress.neighborhood = address.neighborhood;            
-            createAddress.city = address.city;
-            createAddress.state = address.state;
-            createAddress.complement = address.complement;
+        return new Promise(async (resolve, reject) => {
+            try {
+                const { fullName, photoUrl, email, password, phone, address, role } = createUser;
 
-            const user = this.userRepository.create();
-            user.fullName = fullName;
-            photoUrl.length > 0 ? user.photoUrl = photoUrl : user.photoUrl = "url da foto";            ;
-            user.email = email;
-            user.phone = phone;  
-            user.address = createAddress;      
-            user.active = true;
-            user.role = role;
-            user.salt = await bcrypt.genSalt(12);
-            user.confirmationToken = '';
-            user.recoverToken = '';
-            user.password = await this.hashPassword(password, user.salt);
-            const userCreated = await this.userRepository.save(user);
-            delete userCreated.password;
-            delete user.salt;
-            resolve(user);
+                const createAddress = this.addressRepository.create();
+                createAddress.zipCode = address.zipCode;
+                createAddress.street = address.street;
+                createAddress.number = address.number;
+                createAddress.neighborhood = address.neighborhood;
+                createAddress.city = address.city;
+                createAddress.state = address.state;
+                createAddress.complement = address.complement;
+
+                const user = this.userRepository.create();
+                user.fullName = fullName;
+                photoUrl.length > 0 ? user.photoUrl = photoUrl : user.photoUrl = "url da foto";;
+                user.email = email;
+                user.phone = phone;
+                user.address = createAddress;
+                user.active = true;
+                user.role = role;
+                user.salt = await bcrypt.genSalt(12);
+                user.confirmationToken = '';
+                user.recoverToken = '';
+                user.password = await this.hashPassword(password, user.salt);
+                const userCreated = await this.userRepository.save(user);
+                delete userCreated.password;
+                delete userCreated.salt;
+                resolve(userCreated);
+
+            } catch (error) {
+                reject({ code: error.code, detail: error.detail })                
+            }
         })
     }
 
@@ -96,7 +101,7 @@ export class AuthService {
             try {
                 resolve(await this.jwtService.verifyAsync(jwtToken, {
                     ignoreExpiration: false
-                }))                
+                }))
             } catch (error) {
                 reject({
                     code: 401,
