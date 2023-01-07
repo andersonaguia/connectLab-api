@@ -4,17 +4,19 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { AuthService } from 'src/core/auth/auth.service';
 import { UsersService } from '../services/users.service';
 import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
+import { ChangePasswordDTO } from 'src/core/auth/dto/change-password.dto';
 
-@Controller('users')
+@Controller()
 export class UsersController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService
   ) { }
 
-  @Post()
-  create(@Body() user: CreateUserDto) {
-    return this.authService.signUp(user);
+  @UseGuards(JwtAuthGuard)
+  @Post('/users/changepassword')
+  async changePassword(@Body() data: ChangePasswordDTO) {
+    return await this.authService.changePassword(data);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -29,6 +29,7 @@ export class CreateUserDto {
   )
   readonly email: string;
 
+  @IsString({ message: 'password must be a string' })
   @IsNotEmpty({ message: 'password cannot be empty' })
   @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, {
     message:

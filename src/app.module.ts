@@ -13,7 +13,7 @@ import { JwtStrategy } from './core/auth/guards/strategy/jwt.strategy';
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions:{
-        expiresIn: 15
+        expiresIn: 60 * 5 * 6
       }
     }),
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
