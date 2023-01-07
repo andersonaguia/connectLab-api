@@ -6,6 +6,8 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { CredentialsDTO } from './dto/credentials.dto';
 import { AddressEntity } from 'src/users/entities/address.entity';
+import { ChangePasswordDTO } from './dto/change-password.dto';
+import { UpdateUserPasswordDTO } from './dto/updateUserPassword.dto';
 
 @Injectable()
 export class AuthService {
@@ -72,7 +74,7 @@ export class AuthService {
                 resolve(userCreated);
 
             } catch (error) {
-                reject({ code: error.code, detail: error.detail })                
+                reject({ code: error.code, detail: error.detail })
             }
         })
     }
@@ -113,5 +115,51 @@ export class AuthService {
 
     decodedToken(jwtToken: string) {
         return this.jwtService.decode(jwtToken);
+    }
+
+    async changePassword(data: ChangePasswordDTO) {
+        const { email, oldPassword, newPassword } = data;
+
+        const credentials = {
+            email: "",
+            password: ""
+        }
+
+        credentials.email = email;
+        credentials.password = oldPassword;
+
+        const user = await this.checkCredentials(credentials);
+
+        if (user === null) {
+            throw new UnauthorizedException('Incorrect email or oldPassword')
+        } else {
+            const dataToUpdate: UpdateUserPasswordDTO = new UpdateUserPasswordDTO();
+            dataToUpdate.password = await this.hashPassword(newPassword, user.salt);
+            dataToUpdate.updatedAt = new Date();
+            user.salt = await bcrypt.genSalt(12);
+
+            await this.updateUserPassword(user.id, dataToUpdate);
+        }
+    }
+
+    updateUserPassword(id: string, dataToUpdate: UpdateUserPasswordDTO) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await this.userRepository.update({ id: id }, dataToUpdate);
+                const { affected } = response;
+                if (affected === 0) {
+                    reject({
+                        code: 20000,
+                        detail: 'Este ID não está presente no banco de dados ou não foi possível atualizar.'
+                    })
+                }
+                resolve(true)
+            } catch (error) {
+                reject({
+                    code: error.code,
+                    detail: error.detail
+                })
+            }
+        })
     }
 }
