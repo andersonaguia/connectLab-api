@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserEntity } from '../entities/user.entity';
@@ -10,16 +9,20 @@ export class UsersService {
   constructor(private authService: AuthService,
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<UserEntity>
-  ) { }
+  ) { }  
 
+  async findOne(payload):Promise <UserEntity> {
+    const { user } = payload;
+   
+    const getUser = await this.userRepository.findOne({
+      where: {
+        id: user.id
+      },
+    })
+    delete getUser.password;
+    delete getUser.salt;
   
-
-  findAll() {
-    return `This action returns all users`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return getUser;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

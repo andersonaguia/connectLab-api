@@ -14,29 +14,30 @@ export class UsersController {
   ) { }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/users/changepassword')
+  @Patch('/users/changepassword')
   async changePassword(@Body() data: ChangePasswordDTO) {
     return await this.authService.changePassword(data);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get()
-  async findAll(@Request() req) {
-    return await this.usersService.findAll();
+  @Get('/users/profile')
+  async findOne(@Request() req) {
+    return await this.usersService.findOne(req)
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
-  }
+  /*
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+      return this.usersService.findOne(+id);
+    }
+  
+    @Patch(':id')
+    update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+      return this.usersService.update(+id, updateUserDto);
+    }
+  
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+      return this.usersService.remove(+id);
+    }
+    */
 }
