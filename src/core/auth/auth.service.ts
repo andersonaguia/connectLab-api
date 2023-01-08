@@ -65,8 +65,6 @@ export class AuthService {
                 user.active = true;
                 user.role = role;
                 user.salt = await bcrypt.genSalt(12);
-                user.confirmationToken = '';
-                user.recoverToken = '';
                 user.password = await this.hashPassword(password, user.salt);
                 const userCreated = await this.userRepository.save(user);
                 delete userCreated.password;
@@ -131,7 +129,7 @@ export class AuthService {
         const user = await this.checkCredentials(credentials);
 
         if (user === null) {
-            throw new UnauthorizedException('Incorrect email or oldPassword')
+            throw new UnauthorizedException('Incorrect email or old password')
         } else {
             const dataToUpdate: UpdateUserPasswordDTO = new UpdateUserPasswordDTO();
             dataToUpdate.password = await this.hashPassword(newPassword, user.salt);
@@ -142,7 +140,7 @@ export class AuthService {
         }
     }
 
-    updateUserPassword(id: string, dataToUpdate: UpdateUserPasswordDTO) {
+    updateUserPassword(id: number, dataToUpdate: UpdateUserPasswordDTO) {
         return new Promise(async (resolve, reject) => {
             try {
                 const response = await this.userRepository.update({ id: id }, dataToUpdate);

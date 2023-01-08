@@ -6,7 +6,7 @@ import { UserRole } from "../enum/user.role";
 @Entity({ name: 'users' })
 export class UserEntity {
     @PrimaryGeneratedColumn()
-    id: string;
+    id: number;
 
     @Column({ length: 50 })
     fullName: string;
@@ -32,7 +32,7 @@ export class UserEntity {
     @OneToOne(
         type => AddressEntity,
         (address) => address.id,
-        { cascade: true })
+        { cascade: true, eager: true })
     @JoinColumn({ name: 'address_id' })
     address: AddressEntity;
 
@@ -47,11 +47,13 @@ export class UserEntity {
     default: UserRole.CLIENT})
     role: UserRole;
 
+    /*
     @Column({ type: 'varchar', length: 64 })
     confirmationToken: string;
 
     @Column({ type: 'varchar', length: 64 })
     recoverToken: string;
+    */
 
     async checkPassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt)
