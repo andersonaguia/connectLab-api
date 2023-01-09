@@ -1,10 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { CreateDeviceDto } from '../dto/create-device.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Repository } from 'typeorm';
+import { CreateDeviceDTO } from '../dto/create-device.dto';
 import { UpdateDeviceDto } from '../dto/update-device.dto';
+import { DeviceEntity } from '../entities/device.entity';
 
 @Injectable()
 export class DevicesService {
-  create(createDeviceDto: CreateDeviceDto) {
+  
+
+  create(device: CreateDeviceDTO) {
     return 'This action adds a new device';
   }
 

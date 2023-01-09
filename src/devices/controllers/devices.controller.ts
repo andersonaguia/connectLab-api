@@ -15,7 +15,7 @@ export class DevicesController {
   @Roles(UserRole.ADMIN)
   @Post()
   create(@Body() device: CreateDeviceDTO) {
-    return this.devicesService.create(device);
+    return device;
   }
 
   @Get()
