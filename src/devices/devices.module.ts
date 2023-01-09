@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { DevicesService } from './devices.service';
-import { DevicesController } from './devices.controller';
+import { DevicesService } from './services/devices.service';
+import { DevicesController } from './controllers/devices.controller';
 
 @Module({
   controllers: [DevicesController],
