@@ -7,6 +7,7 @@ import { userProviders } from './users/users.providers';
 import { AuthService } from './core/auth/auth.service';
 import { AppController } from './app.controller';
 import { JwtStrategy } from './core/auth/guards/strategy/jwt.strategy';
+import { DevicesModule } from './devices/devices.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { JwtStrategy } from './core/auth/guards/strategy/jwt.strategy';
       }
     }),
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
-    UsersModule
+    UsersModule,
+    DevicesModule
   ],
   controllers: [AppController],
   providers: [
