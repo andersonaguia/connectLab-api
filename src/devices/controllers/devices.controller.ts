@@ -2,11 +2,17 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { DevicesService } from '../services/devices.service';
 import { CreateDeviceDto } from '../dto/create-device.dto';
 import { UpdateDeviceDto } from '../dto/update-device.dto';
+import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/core/auth/guards/roles/roles.guard';
+import { Roles } from 'src/core/auth/guards/decorators/roles.decorator';
+import { UserRole } from 'src/users/enum/user.role';
 
 @Controller('devices')
 export class DevicesController {
   constructor(private readonly devicesService: DevicesService) {}
   
+  @UseGuards(JwtAuthGuard, RolesGuard)  
+  @Roles(UserRole.ADMIN)
   @Post()
   create(@Body() createDeviceDto: CreateDeviceDto) {
     return this.devicesService.create(createDeviceDto);
