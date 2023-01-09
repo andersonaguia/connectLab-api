@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { DevicesService } from '../services/devices.service';
-import { CreateDeviceDto } from '../dto/create-device.dto';
+import { CreateDeviceDTO } from '../dto/create-device.dto';
 import { UpdateDeviceDto } from '../dto/update-device.dto';
 import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/core/auth/guards/roles/roles.guard';
@@ -14,8 +14,8 @@ export class DevicesController {
   @UseGuards(JwtAuthGuard, RolesGuard)  
   @Roles(UserRole.ADMIN)
   @Post()
-  create(@Body() createDeviceDto: CreateDeviceDto) {
-    return this.devicesService.create(createDeviceDto);
+  create(@Body() device: CreateDeviceDTO) {
+    return this.devicesService.create(device);
   }
 
   @Get()
