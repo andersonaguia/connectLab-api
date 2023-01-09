@@ -14,8 +14,8 @@ export class DevicesController {
   @UseGuards(JwtAuthGuard, RolesGuard)  
   @Roles(UserRole.ADMIN)
   @Post()
-  create(@Body() device: CreateDeviceDTO) {
-    return device;
+  async create(@Body() device: CreateDeviceDTO) {
+    return await this.devicesService.create(device);
   }
 
   @Get()
