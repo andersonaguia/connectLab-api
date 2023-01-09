@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { AddressEntity } from "./address.entity";
 import * as bcrypt from 'bcrypt';
 import { UserRole } from "../enum/user.role";
@@ -46,14 +46,6 @@ export class UserEntity {
     enum: UserRole,
     default: UserRole.CLIENT})
     role: UserRole;
-
-    /*
-    @Column({ type: 'varchar', length: 64 })
-    confirmationToken: string;
-
-    @Column({ type: 'varchar', length: 64 })
-    recoverToken: string;
-    */
 
     async checkPassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt)

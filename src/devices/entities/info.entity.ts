@@ -17,5 +17,5 @@ export class InfoEntity {
 
     @OneToOne(() => DeviceEntity,
         (device) => device.id)
-    device: DeviceEntity;
+    deviceId: DeviceEntity;
 }
