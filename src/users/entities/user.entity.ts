@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGenerate
 import { AddressEntity } from "./address.entity";
 import * as bcrypt from 'bcrypt';
 import { UserRole } from "../enum/user.role";
+import { UserDeviceEntity } from "./user-devices.entity";
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -35,6 +36,13 @@ export class UserEntity {
         { cascade: true, eager: true })
     @JoinColumn({ name: 'address_id' })
     address: AddressEntity;
+
+    @OneToOne(
+        type => UserDeviceEntity,
+        (userDevices) => userDevices.id,
+        { cascade: true, eager: true })
+    @JoinColumn({ name: 'userDevices_id' })
+    userDevices: UserDeviceEntity;
 
     @Column({ nullable: false })
     salt: string;
