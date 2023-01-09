@@ -1,5 +1,6 @@
 import { DeviceEntity } from "src/devices/entities/device.entity";
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { UserDeviceLocationEntity } from "./user-devices-location.entity";
 import { UserEntity } from "./user.entity";
 
 @Entity({ name: 'user_devices' })
@@ -19,9 +20,9 @@ export class UserDeviceEntity {
     deviceId: DeviceEntity;
 
     @OneToOne(
-        type => DeviceLocationEntity,
-        (deviceLocation) => deviceLocation.id,
+        type => UserDeviceLocationEntity,
+        (UserDeviceLocation) => UserDeviceLocation.id,
         { cascade: true, eager: true })
-    @JoinColumn({ name: 'deviceLocation_id' })
-    deviceLocation: DeviceLocationEntity;
+    @JoinColumn({ name: 'userDeviceLocation_id' })
+    deviceLocation: UserDeviceLocationEntity;
 }
