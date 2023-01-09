@@ -15,7 +15,7 @@ export class DevicesService {
     private deviceInfoRepository: Repository<InfoEntity>
   ) { }
   
-  create(deviceData: CreateDeviceDTO): Promise<DeviceEntity> {
+  createDevice(deviceData: CreateDeviceDTO): Promise<DeviceEntity> {
     return new Promise(async (resolve, reject) => {
       try {
         const { name, type, madeBy, photoUrl, info } = deviceData;
@@ -23,7 +23,7 @@ export class DevicesService {
         const deviceInfo = this.deviceInfoRepository.create();
         deviceInfo.ipAddress = info.ipAddress;
         deviceInfo.macAddress = info.macAddress;
-        deviceInfo.signal = info.signal;       
+        deviceInfo.signal = info.signal;  
 
         const device = this.deviceRepository.create();
         device.name = name;
@@ -32,6 +32,7 @@ export class DevicesService {
         device.photoUrl = photoUrl;
         device.info = deviceInfo;
         const deviceCreated = await this.deviceRepository.save(device);
+
         resolve(deviceCreated);
 
       } catch (error) {
