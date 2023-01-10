@@ -93,12 +93,12 @@ export class UsersService {
     const { id } = req.user;
     const userDevice = await this.userDevicesRepository.findOne({
       where:
-      {        
+      {
         id: deviceId,
         userId: Equal(id)
       }
     })
-  
+
     if (userDevice) {
       const deviceDetails: userDeviceDetailDTO = new userDeviceDetailDTO();
       deviceDetails.id = userDevice.id;
@@ -109,7 +109,7 @@ export class UsersService {
       deviceDetails.information = userDevice.information;
       deviceDetails.ipAddress = userDevice.device.info.ipAddress;
       deviceDetails.macAddress = userDevice.device.info.macAddress;
-      
+
       return deviceDetails;
     }
     throw new NotFoundException('Device id is not found.')
