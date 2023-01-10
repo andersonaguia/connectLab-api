@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserEntity } from '../entities/user.entity';
 import { AuthService } from 'src/core/auth/auth.service';
@@ -7,6 +7,7 @@ import { addDeviceToUserDTO } from '../dto/add-device-to-user.dto';
 import { UserDevicesEntity } from '../entities/user-devices.entity';
 import { DeviceEntity } from 'src/devices/entities/device.entity';
 import { UserDeviceLocationEntity } from '../entities/user-devices-location.entity';
+import { userDeviceDetailDTO } from '../dto/user-device-detail.dto';
 
 @Injectable()
 export class UsersService {
@@ -89,20 +90,29 @@ export class UsersService {
   }
 
   async findUserDeviceDetail(deviceId: number, req) {
-    const device = await this.userDevicesRepository.findOne({
-      where: {
-        userId: req.user.id,
-        id: deviceId
+    const { id } = req.user;
+    const userDevice = await this.userDevicesRepository.findOne({
+      where:
+      {        
+        id: deviceId,
+        userId: Equal(id)
       }
     })
-    /*if (user && (await user.checkPassword(password))) {
-        return user;
-    }*/
-    if (device) {
+  
+    if (userDevice) {
+      const deviceDetails: userDeviceDetailDTO = new userDeviceDetailDTO();
+      deviceDetails.id = userDevice.id;
+      deviceDetails.name = userDevice.device.name;
+      deviceDetails.type = userDevice.device.type;
+      deviceDetails.madeBy = userDevice.device.madeBy;
+      deviceDetails.isOn = userDevice.isOn;
+      deviceDetails.information = userDevice.information;
+      deviceDetails.ipAddress = userDevice.device.info.ipAddress;
+      deviceDetails.macAddress = userDevice.device.info.macAddress;
       
-      return device;
+      return deviceDetails;
     }
-    return null;
+    throw new NotFoundException('Device id is not found.')
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

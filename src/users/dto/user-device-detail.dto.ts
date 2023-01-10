@@ -1,4 +1,6 @@
 export class userDeviceDetailDTO {
+    id: number;
+    
     name: string;
 
     type: string;
