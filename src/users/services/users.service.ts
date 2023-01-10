@@ -88,9 +88,21 @@ export class UsersService {
     })
   }
 
-  findUserDeviceDetail(deviceId: string, req) {
-    console.log(deviceId);
-    console.log(req.user);
+  async findUserDeviceDetail(deviceId: number, req) {
+    const device = await this.userDevicesRepository.findOne({
+      where: {
+        userId: req.user.id,
+        id: deviceId
+      }
+    })
+    /*if (user && (await user.checkPassword(password))) {
+        return user;
+    }*/
+    if (device) {
+      
+      return device;
+    }
+    return null;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

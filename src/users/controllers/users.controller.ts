@@ -21,8 +21,8 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/users/devicedetails/:id')
-  async findUserDeviceDetail(@Param('id') deviceId, @Request() req) {
-    return await this.usersService.findUserDeviceDetail(deviceId, req);
+  async findUserDeviceDetail(@Param('id') deviceId: number, @Request() req) {
+    return await this.usersService.findUserDeviceDetail(+deviceId, req);
   }
 
   @UseGuards(JwtAuthGuard)
