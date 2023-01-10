@@ -1,8 +1,8 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { AddressEntity } from "./address.entity";
 import * as bcrypt from 'bcrypt';
 import { UserRole } from "../enum/user.role";
-import { UserDeviceEntity } from "./user-devices.entity";
+import { UserDevicesEntity } from "./user-devices.entity";
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -37,12 +37,8 @@ export class UserEntity {
     @JoinColumn({ name: 'address_id' })
     address: AddressEntity;
 
-    @OneToOne(
-        type => UserDeviceEntity,
-        (userDevices) => userDevices.id,
-        { cascade: true, eager: true })
-    @JoinColumn({ name: 'userDevices_id' })
-    userDevices: UserDeviceEntity;
+    @OneToMany(() => UserDevicesEntity, (userDevices) => userDevices.id, { cascade: true })
+    devices: UserDevicesEntity[]
 
     @Column({ nullable: false })
     salt: string;
@@ -54,14 +50,6 @@ export class UserEntity {
     enum: UserRole,
     default: UserRole.CLIENT})
     role: UserRole;
-
-    /*
-    @Column({ type: 'varchar', length: 64 })
-    confirmationToken: string;
-
-    @Column({ type: 'varchar', length: 64 })
-    recoverToken: string;
-    */
 
     async checkPassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt)

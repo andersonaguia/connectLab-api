@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateDeviceDTO } from '../dto/create-device.dto';
 import { UpdateDeviceDto } from '../dto/update-device.dto';
 import { DeviceEntity } from '../entities/device.entity';
-import { InfoEntity } from '../entities/info.entity';
+import { DeviceInfoEntity } from '../entities/device-info.entity';
 
 @Injectable()
 export class DevicesService {
@@ -12,7 +12,7 @@ export class DevicesService {
     @Inject('DEVICE_REPOSITORY')
     private deviceRepository: Repository<DeviceEntity>,
     @Inject('DEVICE_INFO_REPOSITORY')
-    private deviceInfoRepository: Repository<InfoEntity>
+    private deviceInfoRepository: Repository<DeviceInfoEntity>
   ) { }
   
   createDevice(deviceData: CreateDeviceDTO): Promise<DeviceEntity> {

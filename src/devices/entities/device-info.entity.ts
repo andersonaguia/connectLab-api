@@ -2,7 +2,7 @@ import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { DeviceEntity } from "./device.entity";
 
 @Entity({ name: 'device_info' })
-export class InfoEntity {
+export class DeviceInfoEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -17,5 +17,5 @@ export class InfoEntity {
 
     @OneToOne(() => DeviceEntity,
         (device) => device.id)
-    device: DeviceEntity;
+    deviceId: DeviceEntity;
 }

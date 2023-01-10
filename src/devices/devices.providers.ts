@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { DeviceEntity } from './entities/device.entity';
-import { InfoEntity } from './entities/info.entity';
+import { DeviceInfoEntity } from './entities/device-info.entity';
 
 export const deviceProviders = [
   {
@@ -10,7 +10,7 @@ export const deviceProviders = [
   },
   {
     provide: 'DEVICE_INFO_REPOSITORY',
-    useFactory: (dataSource: DataSource) => dataSource.getRepository(InfoEntity),
+    useFactory: (dataSource: DataSource) => dataSource.getRepository(DeviceInfoEntity),
     inject: ['DATA_SOURCE'],
   }
 ];

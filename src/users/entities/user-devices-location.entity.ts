@@ -1,6 +1,5 @@
-import { DeviceEntity } from "src/devices/entities/device.entity";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { UserDeviceEntity } from "./user-devices.entity";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { UserDevicesEntity } from "./user-devices.entity";
 
 @Entity({ name: 'user_devices_location' })
 export class UserDeviceLocationEntity {
@@ -10,8 +9,8 @@ export class UserDeviceLocationEntity {
     @Column({ length: 30 })
     deviceLocation: string;
 
-    @OneToOne(() => UserDeviceEntity,
+    @OneToOne(() => UserDevicesEntity,
         (userDevice) => userDevice.id)
-    userDeviceId: UserDeviceEntity;
+    userDeviceId: UserDevicesEntity;
 
 }

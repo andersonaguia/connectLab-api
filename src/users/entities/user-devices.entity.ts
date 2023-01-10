@@ -1,28 +1,34 @@
 import { DeviceEntity } from "src/devices/entities/device.entity";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserDeviceLocationEntity } from "./user-devices-location.entity";
 import { UserEntity } from "./user.entity";
 
 @Entity({ name: 'user_devices' })
-export class UserDeviceEntity {
+export class UserDevicesEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
     isOn: boolean;
 
-    @OneToOne(() => UserEntity,
-        (user) => user.id)
-    userId: UserEntity;
-
-    @OneToOne(() => DeviceEntity,
-        (device) => device.id)
-    deviceId: DeviceEntity;
+    @Column({ length: 50 })
+    information: string;
 
     @OneToOne(
         type => UserDeviceLocationEntity,
-        (UserDeviceLocation) => UserDeviceLocation.id,
+        (userDeviceLocation) => userDeviceLocation.id,
         { cascade: true, eager: true })
-    @JoinColumn({ name: 'userDeviceLocation_id' })
-    deviceLocation: UserDeviceLocationEntity;
+    @JoinColumn({ name: 'deviceLocation_id' })
+    location: UserDeviceLocationEntity;
+
+    @OneToOne(
+        type => DeviceEntity,
+        (device) => device.id,
+        { cascade: true, eager: true })
+    @JoinColumn({ name: 'device_id' })
+    device: DeviceEntity;
+
+    @ManyToOne(() => UserEntity, (user) => user.id, { onDelete: 'SET NULL'})
+    @JoinColumn({ name: 'user_id' })
+    userId: UserEntity;
 }
