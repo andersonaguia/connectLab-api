@@ -20,24 +20,22 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/users/profile')
-  async findOne(@Request() req): Promise<UserEntity>{
-    return await this.usersService.findOne(req)
+  @Get('/users/devicedetails/:id')
+  async findUserDeviceDetail(@Param('id') deviceId: number, @Request() req) {
+    return await this.usersService.findUserDeviceDetail(+deviceId, req);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('/users/add/device')
-  async addDeviceToUser(@Body() deviceData: addDeviceToUserDTO, @Request() req){
+  async addDeviceToUser(@Body() deviceData: addDeviceToUserDTO, @Request() req) {
     return await this.usersService.addDeviceToUser(deviceData, req);
   }
 
-  
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(+id);
+  }
   /*
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-      return this.usersService.findOne(+id);
-    }
-  
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
       return this.usersService.update(+id, updateUserDto);

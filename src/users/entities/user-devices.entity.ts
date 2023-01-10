@@ -23,15 +23,23 @@ export class UserDevicesEntity {
         { cascade: true, eager: true })
     @JoinColumn({ name: 'deviceLocation_id' })
     location: UserDeviceLocationEntity;
-
-    @OneToOne(
-        type => DeviceEntity,
+    /*
+        @OneToOne(
+            type => DeviceEntity,
+            (device) => device.id,
+            { cascade: true, eager: true })
+        @JoinColumn({ name: 'device_id' })
+        device: DeviceEntity;
+    */
+    @ManyToOne(() => DeviceEntity,
         (device) => device.id,
-        { cascade: true, eager: true })
+        { eager: true, onDelete: 'SET NULL' })
     @JoinColumn({ name: 'device_id' })
     device: DeviceEntity;
 
-    @ManyToOne(() => UserEntity, (user) => user.id, { onDelete: 'SET NULL'})
+    @ManyToOne(() => UserEntity,
+        (user) => user.id,
+        { eager: true, onDelete: 'SET NULL' })
     @JoinColumn({ name: 'user_id' })
     userId: UserEntity;
 }
