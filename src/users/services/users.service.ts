@@ -88,6 +88,11 @@ export class UsersService {
     })
   }
 
+  findUserDeviceDetail(deviceId: string, req) {
+    console.log(deviceId);
+    console.log(req.user);
+  }
+
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
