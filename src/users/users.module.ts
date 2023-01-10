@@ -5,11 +5,13 @@ import { userProviders } from './users.providers';
 import { databaseProviders } from 'src/core/database/database.providers';
 import { AuthService } from 'src/core/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
+import { deviceProviders } from 'src/devices/devices.providers';
 @Module({
   controllers: [UsersController],
   providers: [
     ...databaseProviders,
     ...userProviders,
+    ...deviceProviders,
     JwtService,
     UsersService,
     AuthService

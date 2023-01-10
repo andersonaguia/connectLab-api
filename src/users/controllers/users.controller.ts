@@ -1,6 +1,4 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
 import { AuthService } from 'src/core/auth/auth.service';
 import { UsersService } from '../services/users.service';
 import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
@@ -29,8 +27,8 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/users/add/device')
-  async addDevice(@Body() deviceData: addDeviceToUserDTO, @Request() req){
-    return await this.usersService.addDevice(deviceData, req);
+  async addDeviceToUser(@Body() deviceData: addDeviceToUserDTO, @Request() req){
+    return await this.usersService.addDeviceToUser(deviceData, req);
   }
 
   

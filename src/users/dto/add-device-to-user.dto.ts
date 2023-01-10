@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class addDeviceToUserDTO {
-    @IsNotEmpty({ message: "deviceID cannot be empty" })
-    @IsNumber()
-    readonly deviceID: number;
+    @IsNotEmpty({ message: "deviceId cannot be empty" })
+    @IsNumber({}, { message: "deviceId must be a number" })
+    readonly deviceId: number;
 
     @IsNotEmpty({ message: "local cannot be empty" })
     @IsString({ message: "local must be a string" })

@@ -14,6 +14,9 @@ export class UserDevicesEntity {
     @Column({ length: 50 })
     information: string;
 
+    @Column({ length: 50 })
+    room: string;
+
     @OneToOne(
         type => UserDeviceLocationEntity,
         (userDeviceLocation) => userDeviceLocation.id,
