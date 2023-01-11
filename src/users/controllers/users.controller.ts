@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query } from '@nestjs/common';
 import { AuthService } from 'src/core/auth/auth.service';
 import { UsersService } from '../services/users.service';
 import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
@@ -26,6 +26,17 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/users/devices/all')
+  async findAllUserDevices(
+    @Request() req,
+    @Query('page') page = 1, 
+    @Query('limit') limit = 10,
+    @Query('local') local){
+      return this.usersService.findAllUserDevices(req, page, limit, local);
+  }
+
+
+  @UseGuards(JwtAuthGuard)
   @Post('/users/add/device')
   async addDeviceToUser(@Body() deviceData: addDeviceToUserDTO, @Request() req) {
     return await this.usersService.addDeviceToUser(deviceData, req);
@@ -35,6 +46,8 @@ export class UsersController {
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
+
+
   /*
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

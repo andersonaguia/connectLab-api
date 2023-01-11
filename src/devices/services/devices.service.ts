@@ -5,6 +5,9 @@ import { CreateDeviceDTO } from '../dto/create-device.dto';
 import { UpdateDeviceDto } from '../dto/update-device.dto';
 import { DeviceEntity } from '../entities/device.entity';
 import { DeviceInfoEntity } from '../entities/device-info.entity';
+import { UserDeviceLocationEntity } from 'src/users/entities/user-devices-location.entity';
+import { deviceLocals } from '../enum/locals.enum';
+import { addDeviceLocalDTO } from '../dto/add-device-local.dto';
 
 @Injectable()
 export class DevicesService {
@@ -12,9 +15,11 @@ export class DevicesService {
     @Inject('DEVICE_REPOSITORY')
     private deviceRepository: Repository<DeviceEntity>,
     @Inject('DEVICE_INFO_REPOSITORY')
-    private deviceInfoRepository: Repository<DeviceInfoEntity>
+    private deviceInfoRepository: Repository<DeviceInfoEntity>,
+    @Inject('DEVICES_LOCATION_REPOSITORY')
+    private devicesLocationRepository: Repository<UserDeviceLocationEntity>
   ) { }
-  
+
   createDevice(deviceData: CreateDeviceDTO): Promise<DeviceEntity> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -23,7 +28,7 @@ export class DevicesService {
         const deviceInfo = this.deviceInfoRepository.create();
         deviceInfo.ipAddress = info.ipAddress;
         deviceInfo.macAddress = info.macAddress;
-        deviceInfo.signal = info.signal;  
+        deviceInfo.signal = info.signal;
 
         const device = this.deviceRepository.create();
         device.name = name;
@@ -41,19 +46,20 @@ export class DevicesService {
     })
   }
 
-  findAll() {
-    return `This action returns all devices`;
-  }
+  createDeviceLocal(locals: addDeviceLocalDTO) {
+    const { local } = locals;
+    return new Promise(async (resolve, reject) => {
+      try {
+        const localDevice = this.devicesLocationRepository.create();
+        localDevice.deviceLocation = local;
 
-  findOne(id: number) {
-    return `This action returns a #${id} device`;
-  }
+        const localDeviceCreated = await this.devicesLocationRepository.save(localDevice);
 
-  update(id: number, updateDeviceDto: UpdateDeviceDto) {
-    return `This action updates a #${id} device`;
-  }
+        resolve(localDeviceCreated);
 
-  remove(id: number) {
-    return `This action removes a #${id} device`;
+      } catch (error) {
+        reject({ code: error.code, detail: error.detail })
+      }
+    })
   }
 }

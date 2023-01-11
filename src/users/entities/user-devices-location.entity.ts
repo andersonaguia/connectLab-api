@@ -1,3 +1,4 @@
+import { deviceLocals } from "src/devices/enum/locals.enum";
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserDevicesEntity } from "./user-devices.entity";
 
@@ -6,8 +7,10 @@ export class UserDeviceLocationEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ length: 30 })
-    deviceLocation: string;
+    @Column({type: "enum",
+    enum: deviceLocals,
+    default: deviceLocals.CASA})
+    deviceLocation: deviceLocals;
 
     @OneToOne(() => UserDevicesEntity,
         (userDevice) => userDevice.id)
