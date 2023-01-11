@@ -24,5 +24,4 @@ export class CreateDeviceDTO {
     @ValidateNested()
     @Type(() => DeviceInfoDTO)
     readonly info: DeviceInfoDTO;
-
 }

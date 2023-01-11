@@ -8,6 +8,8 @@ import { UserDevicesEntity } from '../entities/user-devices.entity';
 import { DeviceEntity } from 'src/devices/entities/device.entity';
 import { UserDeviceLocationEntity } from '../entities/user-devices-location.entity';
 import { userDeviceDetailDTO } from '../dto/user-device-detail.dto';
+import { IsLowercase } from 'class-validator';
+import { skip } from 'rxjs';
 
 @Injectable()
 export class UsersService {
@@ -91,7 +93,7 @@ export class UsersService {
 
   async findUserDeviceDetail(deviceId: number, req) {
     const { id } = req.user;
-    const userDevice = await this.userDevicesRepository.findOne({
+    const userDevice: UserDevicesEntity = await this.userDevicesRepository.findOne({
       where:
       {
         id: deviceId,
@@ -100,27 +102,35 @@ export class UsersService {
     })
 
     if (userDevice) {
-      const deviceDetails: userDeviceDetailDTO = new userDeviceDetailDTO();
-      deviceDetails.id = userDevice.id;
-      deviceDetails.name = userDevice.device.name;
-      deviceDetails.type = userDevice.device.type;
-      deviceDetails.madeBy = userDevice.device.madeBy;
-      deviceDetails.isOn = userDevice.isOn;
-      deviceDetails.information = userDevice.information;
-      deviceDetails.ipAddress = userDevice.device.info.ipAddress;
-      deviceDetails.macAddress = userDevice.device.info.macAddress;
+      const deviceDetails = this.deviceToReturn(userDevice);
 
       return deviceDetails;
     }
     throw new NotFoundException('Device id is not found.')
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  async findAllUserDevices(req, page: number, limit: number, local: string) {
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    const allUserDevices: UserDevicesEntity[] = await this.userDevicesRepository.find({
+      where: {
+        userId: Equal(req.user.id),
+      },
+      skip: (page - 1) * limit,
+      take: limit
+    })
+
+    if (allUserDevices.length > 0) {
+
+      const userDevices = [];
+      allUserDevices.map((userDevice) => {
+        userDevices.push(this.deviceToReturn(userDevice));
+      })
+
+      return userDevices;
+    }
+
+    return null;
+
   }
 
   async deviceExists(deviceId: number) {
@@ -134,5 +144,19 @@ export class UsersService {
       return true;
     }
     return false;
+  }
+
+  deviceToReturn(userDevice){
+    const deviceDetails: userDeviceDetailDTO = new userDeviceDetailDTO();
+      deviceDetails.id = userDevice.id;
+      deviceDetails.name = userDevice.device.name;
+      deviceDetails.type = userDevice.device.type;
+      deviceDetails.madeBy = userDevice.device.madeBy;
+      deviceDetails.isOn = userDevice.isOn;
+      deviceDetails.information = userDevice.information;
+      deviceDetails.ipAddress = userDevice.device.info.ipAddress;
+      deviceDetails.macAddress = userDevice.device.info.macAddress;
+
+      return deviceDetails;    
   }
 }

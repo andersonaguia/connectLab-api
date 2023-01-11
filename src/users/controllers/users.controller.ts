@@ -30,9 +30,9 @@ export class UsersController {
   async findAllUserDevices(
     @Request() req,
     @Query('page') page = 1, 
-    @Query('size') size = 10, 
+    @Query('limit') limit = 10,
     @Query('local') local){
-      return this.usersService.findAllUserDevices(req, page, size, local);
+      return this.usersService.findAllUserDevices(req, page, limit, local);
   }
 
 
