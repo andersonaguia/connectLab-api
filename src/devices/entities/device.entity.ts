@@ -5,7 +5,7 @@ import { DeviceInfoEntity } from "./device-info.entity";
 @Entity({ name: 'devices' })
 export class DeviceEntity {
     @PrimaryGeneratedColumn()
-    id: number;
+    _id: number;
 
     @Column({ length: 30 })
     name: string;

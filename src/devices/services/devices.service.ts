@@ -26,8 +26,9 @@ export class DevicesService {
         const { name, type, madeBy, photoUrl, info } = deviceData;
 
         const deviceInfo = this.deviceInfoRepository.create();
-        deviceInfo.ipAddress = info.ipAddress;
-        deviceInfo.macAddress = info.macAddress;
+        deviceInfo.virtual_id = info.virtual_id;
+        deviceInfo.ip_address = info.ip_address;
+        deviceInfo.mac_address = info.mac_address;
         deviceInfo.signal = info.signal;
 
         const device = this.deviceRepository.create();

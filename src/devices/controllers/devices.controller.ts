@@ -30,6 +30,6 @@ export class DevicesController {
   @UseGuards(JwtAuthGuard)
   @Get('/devices')
   async findAllDevices(){
-    return this.devicesService.findAllDevices();
+    return 
   }
 }

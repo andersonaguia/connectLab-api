@@ -6,16 +6,19 @@ export class DeviceInfoEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column({length: 30})
+    virtual_id: string;
+
     @Column({ length: 15 })
-    ipAddress: string;
+    ip_address: string;
 
     @Column({ length: 50 })
-    macAddress: string;
+    mac_address: string;
 
     @Column({ length: 10 })
     signal: string;
 
     @OneToOne(() => DeviceEntity,
-        (device) => device.id)
+        (device) => device._id)
     deviceId: DeviceEntity;
 }

@@ -63,7 +63,7 @@ export class UsersService {
 
         if (deviceExists) {
           const device = this.deviceRepository.create();
-          device.id = deviceId;
+          device._id = deviceId;
 
           const deviceLocals = await this.userDevicesLocationRepository.find();
           const localId = deviceLocals.find(el => el.deviceLocation === local);
@@ -136,7 +136,7 @@ export class UsersService {
   async deviceExists(deviceId: number) {
     const device = await this.deviceRepository.findOne({
       where: {
-        id: deviceId,
+        _id: deviceId,
       }
     })
 

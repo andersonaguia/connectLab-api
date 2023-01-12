@@ -27,7 +27,7 @@ export class UserDevicesEntity {
 
     @ManyToOne(
         () => DeviceEntity,
-        (device) => device.id,
+        (device) => device._id,
         { eager: true, onDelete: 'SET NULL' }
     )
     @JoinColumn({ name: 'device_id' })
