@@ -42,12 +42,12 @@ export class AuthService {
         return { token }
     }
 
-    createUser(createUser: CreateUserDto): Promise<UserEntity> {
+    createUser(userData: CreateUserDto): Promise<UserEntity> {
         return new Promise(async (resolve, reject) => {
             try {
-                const { fullName, photoUrl, email, password, phone, address, role } = createUser;
-
-                const createAddress = this.addressRepository.create();
+                const { fullName, photoUrl, email, password, phone, address, role } = userData;
+                
+                const createAddress = new AddressEntity()
                 createAddress.zipCode = address.zipCode;
                 createAddress.street = address.street;
                 createAddress.number = address.number;
@@ -55,10 +55,11 @@ export class AuthService {
                 createAddress.city = address.city;
                 createAddress.state = address.state;
                 createAddress.complement = address.complement;
-
+                
                 const user = this.userRepository.create();
+                
                 user.fullName = fullName;
-                photoUrl.length > 0 ? user.photoUrl = photoUrl : user.photoUrl = "url da foto";;
+                photoUrl.length > 0 ? user.photoUrl = photoUrl : user.photoUrl = "url da foto";
                 user.email = email;
                 user.phone = phone;
                 user.address = createAddress;

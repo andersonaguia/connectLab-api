@@ -41,9 +41,10 @@ export class UsersController {
     return await this.usersService.addDeviceToUser(deviceData, req);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @UseGuards(JwtAuthGuard)
+  @Get('/users/profile')
+  findUser(@Request() req) {
+    return this.usersService.findUser(req);
   }
 
 
