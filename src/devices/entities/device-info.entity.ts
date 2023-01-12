@@ -6,10 +6,10 @@ export class DeviceInfoEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({length: 30})
+    @Column({length: 50})
     virtual_id: string;
 
-    @Column({ length: 15 })
+    @Column({ length: 30 })
     ip_address: string;
 
     @Column({ length: 50 })

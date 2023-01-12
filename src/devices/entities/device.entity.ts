@@ -7,13 +7,13 @@ export class DeviceEntity {
     @PrimaryGeneratedColumn()
     _id: number;
 
-    @Column({ length: 30 })
+    @Column({ length: 100 })
     name: string;
 
-    @Column({ length: 30 })
+    @Column({ length: 100 })
     type: string;
 
-    @Column({ length: 30 })
+    @Column({ length: 100 })
     madeBy: string;
 
     @Column()
@@ -22,7 +22,7 @@ export class DeviceEntity {
     @OneToOne(
         type => DeviceInfoEntity,
         (info) => info.id,
-        { cascade: true, eager: true })
+        { cascade: true, eager: true, onDelete: 'SET NULL' })
     @JoinColumn({ name: 'deviceInfo_id' })
     info: DeviceInfoEntity;
 }

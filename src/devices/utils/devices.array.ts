@@ -1,4 +1,4 @@
-export const devices = [
+export const devicesArray = [
     {
       info: {
         virtual_id: "abcd1234",
