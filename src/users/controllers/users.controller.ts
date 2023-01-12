@@ -3,7 +3,6 @@ import { AuthService } from 'src/core/auth/auth.service';
 import { UsersService } from '../services/users.service';
 import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
 import { ChangePasswordDTO } from 'src/core/auth/dto/change-password.dto';
-import { UserEntity } from '../entities/user.entity';
 import { addDeviceToUserDTO } from '../dto/add-device-to-user.dto';
 
 @Controller()
@@ -29,10 +28,10 @@ export class UsersController {
   @Get('/users/devices/all')
   async findAllUserDevices(
     @Request() req,
-    @Query('page') page = 1, 
+    @Query('page') page = 1,
     @Query('limit') limit = 10,
-    @Query('local') local){
-      return this.usersService.findAllUserDevices(req, page, limit, local);
+    @Query('local') local: number) {
+    return this.usersService.findAllUserDevices(req, page, limit, local);
   }
 
 
