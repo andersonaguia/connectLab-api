@@ -1,6 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Equal, Repository } from 'typeorm';
-import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserEntity } from '../entities/user.entity';
 import { AuthService } from 'src/core/auth/auth.service';
 import { addDeviceToUserDTO } from '../dto/add-device-to-user.dto';
@@ -8,12 +7,11 @@ import { UserDevicesEntity } from '../entities/user-devices.entity';
 import { DeviceEntity } from 'src/devices/entities/device.entity';
 import { UserDeviceLocationEntity } from '../entities/user-devices-location.entity';
 import { userDeviceDetailDTO } from '../dto/user-device-detail.dto';
-import { IsLowercase } from 'class-validator';
-import { skip } from 'rxjs';
 
 @Injectable()
 export class UsersService {
-  constructor(private authService: AuthService,
+  constructor(
+    private authService: AuthService,
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<UserEntity>,
     @Inject('USER_DEVICES_REPOSITORY')
@@ -58,6 +56,7 @@ export class UsersService {
   async addDeviceToUser(deviceData: addDeviceToUserDTO, req) {
     const { user } = req;
     const { deviceId, local, room } = deviceData;
+
     return new Promise(async (resolve, reject) => {
       try {
         const deviceExists = await this.deviceExists(deviceId);
@@ -66,20 +65,25 @@ export class UsersService {
           const device = this.deviceRepository.create();
           device.id = deviceId;
 
-          const localDevice = this.userDevicesLocationRepository.create();
-          localDevice.deviceLocation = local;
+          const deviceLocals = await this.userDevicesLocationRepository.find();
+          const localId = deviceLocals.find(el => el.deviceLocation === local);
+
+          console.log(localId);
+
+          const idLocal = new UserDeviceLocationEntity();
+          idLocal.id = localId.id;
 
           const userDevice = this.userDevicesRepository.create();
           userDevice.isOn = true;
           userDevice.userId = user.id;
           userDevice.information = "Dispositivo Ligado";
           userDevice.device = device;
-          userDevice.location = localDevice;
+          userDevice.location = idLocal;
           userDevice.room = room;
 
-          const userDeviceToCreate = await this.userDevicesRepository.save(userDevice);
+          const deviceCreated = await this.userDevicesRepository.save(userDevice);
 
-          resolve(userDeviceToCreate);
+          resolve(deviceCreated);
         }
         //throw new NotFoundException('deviceId is not found');
       } catch (error) {
@@ -109,28 +113,24 @@ export class UsersService {
     throw new NotFoundException('Device id is not found.')
   }
 
-  async findAllUserDevices(req, page: number, limit: number, local: string) {
-
+  async findAllUserDevices(req, page: number, limit: number, local: number) {
     const allUserDevices: UserDevicesEntity[] = await this.userDevicesRepository.find({
       where: {
         userId: Equal(req.user.id),
+        location: Equal(local)
       },
       skip: (page - 1) * limit,
       take: limit
     })
 
     if (allUserDevices.length > 0) {
-
       const userDevices = [];
       allUserDevices.map((userDevice) => {
         userDevices.push(this.deviceToReturn(userDevice));
       })
-
       return userDevices;
     }
-
     return null;
-
   }
 
   async deviceExists(deviceId: number) {
@@ -146,17 +146,17 @@ export class UsersService {
     return false;
   }
 
-  deviceToReturn(userDevice){
+  deviceToReturn(userDevice) {
     const deviceDetails: userDeviceDetailDTO = new userDeviceDetailDTO();
-      deviceDetails.id = userDevice.id;
-      deviceDetails.name = userDevice.device.name;
-      deviceDetails.type = userDevice.device.type;
-      deviceDetails.madeBy = userDevice.device.madeBy;
-      deviceDetails.isOn = userDevice.isOn;
-      deviceDetails.information = userDevice.information;
-      deviceDetails.ipAddress = userDevice.device.info.ipAddress;
-      deviceDetails.macAddress = userDevice.device.info.macAddress;
+    deviceDetails.id = userDevice.id;
+    deviceDetails.name = userDevice.device.name;
+    deviceDetails.type = userDevice.device.type;
+    deviceDetails.madeBy = userDevice.device.madeBy;
+    deviceDetails.isOn = userDevice.isOn;
+    deviceDetails.information = userDevice.information;
+    deviceDetails.ipAddress = userDevice.device.info.ipAddress;
+    deviceDetails.macAddress = userDevice.device.info.macAddress;
 
-      return deviceDetails;    
+    return deviceDetails;
   }
 }

@@ -11,9 +11,4 @@ export class UserDeviceLocationEntity {
     enum: deviceLocals,
     default: deviceLocals.CASA})
     deviceLocation: deviceLocals;
-
-    @OneToOne(() => UserDevicesEntity,
-        (userDevice) => userDevice.id)
-    userDeviceId: UserDevicesEntity;
-
 }

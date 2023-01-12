@@ -7,7 +7,6 @@ export class addDeviceToUserDTO {
     readonly deviceId: number;
 
     @IsNotEmpty({ message: "local cannot be empty" })
-    @IsEnum({ message: "local must be a enum" })
     readonly local: deviceLocals;
 
     @IsNotEmpty({ message: "room cannot be empty" })
