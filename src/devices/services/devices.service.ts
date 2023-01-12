@@ -24,20 +24,7 @@ export class DevicesService {
   createDevice(deviceData: CreateDeviceDTO): Promise<DeviceEntity> {
     return new Promise(async (resolve, reject) => {
       try {
-        /*const { name, type, madeBy, photoUrl, info } = deviceData;
-
-        const deviceInfo = this.deviceInfoRepository.create();
-        deviceInfo.virtual_id = info.virtual_id;
-        deviceInfo.ip_address = info.ip_address;
-        deviceInfo.mac_address = info.mac_address;
-        deviceInfo.signal = info.signal;*/
-
         const device = this.deviceRepository.create(deviceData);
-       /* device.name = name;
-        device.type = type;
-        device.madeBy = madeBy;
-        device.photoUrl = photoUrl;
-        device.info = deviceInfo;*/
         const deviceCreated = await this.deviceRepository.save(device);
 
         resolve(deviceCreated);
