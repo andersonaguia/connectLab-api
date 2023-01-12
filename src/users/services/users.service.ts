@@ -22,14 +22,13 @@ export class UsersService {
     private userDevicesLocationRepository: Repository<UserDeviceLocationEntity>
   ) { }
 
-  async findOne(req): Promise<UserEntity> {
+  async findUser(req): Promise<UserEntity> {
     const { user } = req;
-
     return new Promise(async (resolve, reject) => {
       try {
         const getUser = await this.userRepository.findOne({
           where: {
-            id: user.id
+            id: Equal(user.id)
           },
         })
 
@@ -64,11 +63,8 @@ export class UsersService {
         if (deviceExists) {
           const device = this.deviceRepository.create();
           device._id = deviceId;
-
           const deviceLocals = await this.userDevicesLocationRepository.find();
           const localId = deviceLocals.find(el => el.deviceLocation === local);
-
-          console.log(localId);
 
           const idLocal = new UserDeviceLocationEntity();
           idLocal.id = localId.id;
@@ -85,7 +81,10 @@ export class UsersService {
 
           resolve(deviceCreated);
         }
-        //throw new NotFoundException('deviceId is not found');
+        reject({
+          code: 404,
+          detail: 'device id is not found'
+        })
       } catch (error) {
         reject({
           code: error.code,
