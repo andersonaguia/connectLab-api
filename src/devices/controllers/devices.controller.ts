@@ -6,7 +6,6 @@ import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/core/auth/guards/roles/roles.guard';
 import { Roles } from 'src/core/auth/guards/decorators/roles.decorator';
 import { UserRole } from 'src/users/enum/user.role';
-import { deviceLocals } from '../enum/locals.enum';
 import { addDeviceLocalDTO } from '../dto/add-device-local.dto';
 
 @Controller()
@@ -25,5 +24,11 @@ export class DevicesController {
   @Post('/devices/locals')
   async createDeviceLocal(@Body() local: addDeviceLocalDTO) {
     return await this.devicesService.createDeviceLocal(local);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/devices/all')
+  async findAllDevices(){
+    return this.devicesService.findAllDevices();
   }
 }

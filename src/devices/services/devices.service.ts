@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { CreateDeviceDTO } from '../dto/create-device.dto';
@@ -8,6 +8,7 @@ import { DeviceInfoEntity } from '../entities/device-info.entity';
 import { UserDeviceLocationEntity } from 'src/users/entities/user-devices-location.entity';
 import { deviceLocals } from '../enum/locals.enum';
 import { addDeviceLocalDTO } from '../dto/add-device-local.dto';
+import { devicesArray } from '../utils/devices.array';
 
 @Injectable()
 export class DevicesService {
@@ -23,19 +24,20 @@ export class DevicesService {
   createDevice(deviceData: CreateDeviceDTO): Promise<DeviceEntity> {
     return new Promise(async (resolve, reject) => {
       try {
-        const { name, type, madeBy, photoUrl, info } = deviceData;
+        /*const { name, type, madeBy, photoUrl, info } = deviceData;
 
         const deviceInfo = this.deviceInfoRepository.create();
-        deviceInfo.ipAddress = info.ipAddress;
-        deviceInfo.macAddress = info.macAddress;
-        deviceInfo.signal = info.signal;
+        deviceInfo.virtual_id = info.virtual_id;
+        deviceInfo.ip_address = info.ip_address;
+        deviceInfo.mac_address = info.mac_address;
+        deviceInfo.signal = info.signal;*/
 
-        const device = this.deviceRepository.create();
-        device.name = name;
+        const device = this.deviceRepository.create(deviceData);
+       /* device.name = name;
         device.type = type;
         device.madeBy = madeBy;
         device.photoUrl = photoUrl;
-        device.info = deviceInfo;
+        device.info = deviceInfo;*/
         const deviceCreated = await this.deviceRepository.save(device);
 
         resolve(deviceCreated);
@@ -61,5 +63,39 @@ export class DevicesService {
         reject({ code: error.code, detail: error.detail })
       }
     })
+  }
+
+  async findAllDevices(): Promise<DeviceEntity[]> {
+    const allDevices = await this.findDevices();
+
+    if (allDevices.length > 0) {
+      return allDevices;
+    }
+
+    await this.insertDevices();
+
+    const devices = await this.findDevices();
+
+    return devices;
+
+  }
+
+  insertDevices() {
+    const devices = devicesArray;
+
+    devices.map(async (device) => {
+      try {
+        const deviceToInsert = await this.deviceRepository.create(device);
+        const deviceCreated = await this.deviceRepository.save(deviceToInsert);
+      } catch (error) {
+        console.log(error);
+      }
+    })
+    return
+  }
+
+  async findDevices() {
+    const devices = await this.deviceRepository.find();
+    return devices;
   }
 }
