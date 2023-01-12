@@ -26,4 +26,10 @@ export class DevicesController {
   async createDeviceLocal(@Body() local: addDeviceLocalDTO) {
     return await this.devicesService.createDeviceLocal(local);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/devices')
+  async findAllDevices(){
+    return this.devicesService.findAllDevices();
+  }
 }
