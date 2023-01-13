@@ -11,10 +11,6 @@ export class ChangePasswordDTO {
 
     @IsString({ message: 'oldPassword must be a string' })
     @IsNotEmpty({ message: 'oldPassword cannot be empty' })
-    @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, {
-        message:
-            'The oldPassword must contain at least 8 characters, including at least one letter, one number and one special character'
-    })
     readonly oldPassword: string;
 
     @IsString({ message: 'newPassword must be a string' })
