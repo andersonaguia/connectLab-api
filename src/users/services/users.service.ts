@@ -98,7 +98,7 @@ export class UsersService {
       try {
         const userDevice = await this.userDeviceExists(userDeviceId);
 
-        if (userDevice && userDevice.userId.id === id) {
+        if ((userDevice !== null) && userDevice.userId.id === id) {
           const deviceDetails = this.modelDetailsUserDevices(userDevice);
           resolve(deviceDetails);
         }
@@ -139,7 +139,7 @@ export class UsersService {
         }
         const userDevices: userDeviceDetailDTO[] = [];
         if (allUserDevices.length > 0) {
-          
+
           allUserDevices.map((userDevice) => {
             userDevices.push(this.modelDetailsUserDevices(userDevice));
           })
@@ -178,7 +178,7 @@ export class UsersService {
     if (userDevice) {
       return userDevice;
     }
-    return false;
+    return null;
   }
 
   modelDetailsUserDevices(userDevice: any): userDeviceDetailDTO {
@@ -195,23 +195,19 @@ export class UsersService {
     return deviceDetails;
   }
 
-  async removeUserDevice(id: number, req) {
-    const user = req.user;
-    console.log(id);
-    console.log(user.id);
+  async removeUserDevice(id: number, req: any): Promise<number> {
+    const userId = req.user.id;
     return new Promise(async (resolve, reject) => {
       try {
         const { affected } = await this.userDevicesRepository.delete({
           id: id,
-          userId: user.id
+          userId: userId
         })
+        console.log(affected);
         if (affected === 0) {
-          reject({
-            code: 20000,
-            detail: 'Este ID não está presente no banco de dados ou não foi possível remover.'
-          })
+          resolve(affected)
         }
-        resolve(true)
+        resolve(affected)
       } catch (error) {
         reject({
           code: error.code,
@@ -219,6 +215,5 @@ export class UsersService {
         })
       }
     })
-
   }
 }

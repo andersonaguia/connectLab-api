@@ -7,7 +7,7 @@ import { addDeviceToUserDTO } from '../dto/add-device-to-user.dto';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
 import { UserDevicesEntity } from '../entities/user-devices.entity';
 import { userDeviceDetailDTO } from '../dto/user-device-detail.dto';
-import { isArray } from 'class-validator';
+import { isArray, isNumber } from 'class-validator';
 
 @Controller()
 export class UsersController {
@@ -52,7 +52,7 @@ export class UsersController {
         @Query('limit') limit: number = 50,
         @Query('local') local: number = null) {
         const result = await this.usersService.findAllUserDevices(req, page, limit, local);
-        
+
         if (isArray(result)) {
             return new NestResponseBuilder()
                 .withStatus(HttpStatus.OK)
@@ -97,7 +97,28 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Delete('/users/delete/:id')
-    removeUserDevice(@Param('id') id: number, @Request() req) {
-        return this.usersService.removeUserDevice(+id, req);
+    async removeUserDevice(@Param('id') id: number, @Request() req) {
+        const result = await this.usersService.removeUserDevice(+id, req);
+
+        if (isNumber(result)) {
+            if (result === 0) {
+                return new NestResponseBuilder()
+                    .withStatus(HttpStatus.NOT_FOUND)
+                    .withBody({
+                        code: 20000,
+                        detail: "This id is not present in the database"
+                    })
+                    .build();
+            } else {
+                return new NestResponseBuilder()
+                    .withStatus(HttpStatus.OK)
+                    .withBody("Device removed successfully")
+                    .build();
+            }
+        }
+        return new NestResponseBuilder()
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withBody(result)
+            .build();
     }
 }
