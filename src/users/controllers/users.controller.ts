@@ -16,20 +16,51 @@ export class UsersController {
     ) { }
 
     @UseGuards(JwtAuthGuard)
-    @Patch('/users/changepassword')
+    @Patch('/auth/changepassword')
     async changePassword(@Body() data: ChangePasswordDTO) {
-        return await this.authService.changePassword(data);
+        const result = await this.authService.changePassword(data);
+        if (result === null) {
+            return new NestResponseBuilder()
+                .withStatus(HttpStatus.UNAUTHORIZED)
+                .withBody({
+                    statusCode: HttpStatus.UNAUTHORIZED,
+                    message: "Incorrect email or oldPassword"
+                })
+                .build();
+        } else if (isNumber(result)) {
+            if (result > 0) {
+                return new NestResponseBuilder()
+                    .withStatus(HttpStatus.OK)
+                    .withBody("Password changed successfully")
+                    .build();
+            } else {
+                return new NestResponseBuilder()
+                    .withStatus(HttpStatus.NOT_FOUND)
+                    .withBody({
+                        code: 20000,
+                        detail: 'This id not found or unable to update'
+                    })
+                    .build();
+            }
+        }
+        return new NestResponseBuilder()
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withBody(result)
+            .build();
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('/users/devicedetails/:id')
-    async findUserDeviceById(@Param('id') deviceId: number, @Request() req) {
+    async findUserDeviceById(@Param('id') deviceId: number, @Request() req: any) {
         const result = await this.usersService.findUserDeviceById(+deviceId, req);
         if (result === null) {
-            throw new NotFoundException({
-                statusCode: HttpStatus.NOT_FOUND,
-                message: 'Device is not found',
-            });
+            return new NestResponseBuilder()
+                .withStatus(HttpStatus.NOT_FOUND)
+                .withBody({
+                    statusCode: HttpStatus.NOT_FOUND,
+                    message: "Device is not found"
+                })
+                .build();
         } else if (result.id) {
             return new NestResponseBuilder()
                 .withStatus(HttpStatus.OK)
@@ -68,13 +99,16 @@ export class UsersController {
     async addDeviceToUser(@Body() deviceData: addDeviceToUserDTO, @Request() req: any) {
         const result: UserDevicesEntity = await this.usersService.addDeviceToUser(deviceData, req);
         if (result === null) {
-            throw new NotFoundException({
-                statusCode: HttpStatus.NOT_FOUND,
-                message: 'deviceId is not found',
-            });
+            return new NestResponseBuilder()
+                .withStatus(HttpStatus.NOT_FOUND)
+                .withBody({
+                    statusCode: HttpStatus.NOT_FOUND,
+                    message: "deviceId is not found"
+                })
+                .build();            
         } else if (result.id) {
             return new NestResponseBuilder()
-                .withStatus(HttpStatus.OK)
+                .withStatus(HttpStatus.CREATED)
                 .withHeaders({ Location: `users/devicedetails/${result.id}` })
                 .withBody("Successfully registered device")
                 .build();
@@ -90,10 +124,13 @@ export class UsersController {
     async findUser(@Request() req: any) {
         const result = await this.usersService.findUser(req);
         if (result === null) {
-            throw new NotFoundException({
-                statusCode: HttpStatus.NOT_FOUND,
-                message: 'User is not found',
-            });
+            return new NestResponseBuilder()
+                .withStatus(HttpStatus.NOT_FOUND)
+                .withBody({
+                    statusCode: HttpStatus.NOT_FOUND,
+                    message: "User is not found"
+                })
+                .build(); 
         } else if (result.id) {
             return new NestResponseBuilder()
                 .withStatus(HttpStatus.OK)
@@ -115,6 +152,8 @@ export class UsersController {
                 return new NestResponseBuilder()
                     .withStatus(HttpStatus.NOT_FOUND)
                     .withBody({
+                        statusCode: HttpStatus.NOT_FOUND,
+                        message: "deviceId is not found",
                         code: 20000,
                         detail: "This id is not present in the database"
                     })

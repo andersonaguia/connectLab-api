@@ -46,7 +46,7 @@ export class AuthService {
         return new Promise(async (resolve, reject) => {
             try {
                 const { fullName, photoUrl, email, password, phone, address, role } = userData;
-                
+
                 const createAddress = new AddressEntity()
                 createAddress.zipCode = address.zipCode;
                 createAddress.street = address.street;
@@ -55,9 +55,9 @@ export class AuthService {
                 createAddress.city = address.city;
                 createAddress.state = address.state;
                 createAddress.complement = address.complement;
-                
+
                 const user = this.userRepository.create();
-                
+
                 user.fullName = fullName;
                 photoUrl.length > 0 ? user.photoUrl = photoUrl : user.photoUrl = "url da foto";
                 user.email = email;
@@ -116,43 +116,43 @@ export class AuthService {
         return this.jwtService.decode(jwtToken);
     }
 
-    async changePassword(data: ChangePasswordDTO) {
+    async changePassword(data: ChangePasswordDTO): Promise<number> {
         const { email, oldPassword, newPassword } = data;
-
-        const credentials = {
-            email: "",
-            password: ""
-        }
-
-        credentials.email = email;
-        credentials.password = oldPassword;
-
-        const user = await this.checkCredentials(credentials);
-
-        if (user === null) {
-            throw new UnauthorizedException('Incorrect email or old password')
-        } else {
-            const dataToUpdate: UpdateUserPasswordDTO = new UpdateUserPasswordDTO();
-            dataToUpdate.password = await this.hashPassword(newPassword, user.salt);
-            dataToUpdate.updatedAt = new Date();
-            user.salt = await bcrypt.genSalt(12);
-
-            await this.updateUserPassword(user.id, dataToUpdate);
-        }
-    }
-
-    updateUserPassword(id: number, dataToUpdate: UpdateUserPasswordDTO) {
         return new Promise(async (resolve, reject) => {
             try {
-                const response = await this.userRepository.update({ id: id }, dataToUpdate);
-                const { affected } = response;
-                if (affected === 0) {
-                    reject({
-                        code: 20000,
-                        detail: 'Este ID não está presente no banco de dados ou não foi possível atualizar.'
-                    })
+                const credentials: CredentialsDTO = new CredentialsDTO()
+                credentials.email = email;
+                credentials.password = oldPassword;
+
+                const user = await this.checkCredentials(credentials);
+
+                if (user === null) {
+                    resolve(null);
                 }
-                resolve(true)
+                const dataToUpdate = new UpdateUserPasswordDTO();
+                dataToUpdate.password = await this.hashPassword(newPassword, user.salt);
+                dataToUpdate.updatedAt = new Date();
+                user.salt = await bcrypt.genSalt(12);
+
+                const success = await this.updateUserPassword(user.id, dataToUpdate);
+                resolve(success);
+            } catch (error) {
+                reject({
+                    code: error.code,
+                    detail: error.detail
+                });
+            }
+        })
+    }
+
+    updateUserPassword(id: number, dataToUpdate: UpdateUserPasswordDTO): Promise<number> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const { affected } = await this.userRepository.update({ id: id }, dataToUpdate);
+                if (affected === 0) {
+                    resolve(affected)
+                }
+                resolve(affected)
             } catch (error) {
                 reject({
                     code: error.code,

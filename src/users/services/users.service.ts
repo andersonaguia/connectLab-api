@@ -202,7 +202,6 @@ export class UsersService {
           id: id,
           userId: userId
         })
-        console.log(affected);
         if (affected === 0) {
           resolve(affected)
         }
