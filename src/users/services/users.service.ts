@@ -22,7 +22,7 @@ export class UsersService {
     private userDevicesLocationRepository: Repository<UserDeviceLocationEntity>
   ) { }
 
-  async findUser(req:any): Promise<UserEntity> {
+  async findUser(req: any): Promise<UserEntity> {
     const { user } = req;
     return new Promise(async (resolve, reject) => {
       try {
@@ -77,12 +77,11 @@ export class UsersService {
           userDevice.room = room;
 
           const deviceCreated = await this.userDevicesRepository.save(userDevice);
-
           resolve(deviceCreated);
         }
         resolve(null);
-
       } catch (error) {
+        console.log("catch")
         reject({
           code: error.code,
           detail: error.detail

@@ -1,4 +1,4 @@
-import { Inject, Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -20,41 +20,12 @@ export class AuthService {
         private addressRepository: Repository<AddressEntity>
     ) { }
 
-    async signUp(createUserDto: CreateUserDto): Promise<UserEntity> {
-        if (createUserDto.password != createUserDto.passwordConfirmation) {
-            throw new UnprocessableEntityException('Passwords do not match')
-        }
-        return await this.createUser(createUserDto)
-    }
-
-    async signIn(credentials: CredentialsDTO): Promise<TokenDTO> {
+    async signUp(userData: CreateUserDto): Promise<UserEntity> {
         return new Promise(async (resolve, reject) => {
             try {
-                const user = await this.checkCredentials(credentials);
-                if (user === null) {
-                    resolve(null)
+                if (userData.password != userData.passwordConfirmation) {
+                    resolve(null);
                 }
-                const jwtPayload = {
-                    id: user.id,
-                    fullName: user.fullName,
-                    email: user.email,
-                    role: user.role
-                }
-                const token = new TokenDTO();
-                token.token = this.jwtService.sign(jwtPayload);
-                resolve(token)
-            } catch (error) {
-                reject({
-                    code: error.code,
-                    detail: error.detail
-                });
-            }
-        })
-    }
-
-    createUser(userData: CreateUserDto): Promise<UserEntity> {
-        return new Promise(async (resolve, reject) => {
-            try {
                 const { fullName, photoUrl, email, password, phone, address, role } = userData;
 
                 const createAddress = new AddressEntity()
@@ -81,9 +52,36 @@ export class AuthService {
                 delete userCreated.password;
                 delete userCreated.salt;
                 resolve(userCreated);
-
             } catch (error) {
-                reject({ code: error.code, detail: error.detail })
+                reject({
+                    code: error.code,
+                    detail: error.detail
+                });
+            }
+        })
+    }
+
+    async signIn(credentials: CredentialsDTO): Promise<TokenDTO> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const user = await this.checkCredentials(credentials);
+                if (user === null) {
+                    resolve(null)
+                }
+                const jwtPayload = {
+                    id: user.id,
+                    fullName: user.fullName,
+                    email: user.email,
+                    role: user.role
+                }
+                const token = new TokenDTO();
+                token.token = this.jwtService.sign(jwtPayload);
+                resolve(token)
+            } catch (error) {
+                reject({
+                    code: error.code,
+                    detail: error.detail
+                });
             }
         })
     }
