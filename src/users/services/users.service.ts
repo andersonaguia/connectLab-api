@@ -22,7 +22,7 @@ export class UsersService {
     private userDevicesLocationRepository: Repository<UserDeviceLocationEntity>
   ) { }
 
-  async findUser(req): Promise<UserEntity> {
+  async findUser(req:any): Promise<UserEntity> {
     const { user } = req;
     return new Promise(async (resolve, reject) => {
       try {
@@ -36,13 +36,12 @@ export class UsersService {
           if (getUser.phone?.length < 1) {
             delete getUser.phone;
           }
-
           delete getUser.password;
           delete getUser.salt;
-
           resolve(getUser);
         }
 
+        resolve(null);
       } catch (error) {
         reject({
           code: error.code,
@@ -155,7 +154,7 @@ export class UsersService {
     })
   }
 
-  async deviceExists(deviceId: number) {
+  async deviceExists(deviceId: number): Promise<boolean> {
     const device = await this.deviceRepository.findOne({
       where: {
         _id: Equal(deviceId),
@@ -168,7 +167,7 @@ export class UsersService {
     return false;
   }
 
-  async userDeviceExists(userDeviceId: number) {
+  async userDeviceExists(userDeviceId: number): Promise<UserDevicesEntity> {
     const userDevice: UserDevicesEntity = await this.userDevicesRepository.findOne({
       where: {
         id: Equal(userDeviceId),

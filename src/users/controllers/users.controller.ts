@@ -6,7 +6,6 @@ import { ChangePasswordDTO } from 'src/core/auth/dto/change-password.dto';
 import { addDeviceToUserDTO } from '../dto/add-device-to-user.dto';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
 import { UserDevicesEntity } from '../entities/user-devices.entity';
-import { userDeviceDetailDTO } from '../dto/user-device-detail.dto';
 import { isArray, isNumber } from 'class-validator';
 
 @Controller()
@@ -41,7 +40,6 @@ export class UsersController {
             .withStatus(HttpStatus.BAD_REQUEST)
             .withBody(result)
             .build();
-
     }
 
     @UseGuards(JwtAuthGuard)
@@ -65,12 +63,10 @@ export class UsersController {
             .build();
     }
 
-
     @UseGuards(JwtAuthGuard)
     @Post('/users/adddevice')
-    async addDeviceToUser(@Body() deviceData: addDeviceToUserDTO, @Request() req) {
+    async addDeviceToUser(@Body() deviceData: addDeviceToUserDTO, @Request() req: any) {
         const result: UserDevicesEntity = await this.usersService.addDeviceToUser(deviceData, req);
-
         if (result === null) {
             throw new NotFoundException({
                 statusCode: HttpStatus.NOT_FOUND,
@@ -91,15 +87,29 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/users/profile')
-    findUser(@Request() req) {
-        return this.usersService.findUser(req);
+    async findUser(@Request() req: any) {
+        const result = await this.usersService.findUser(req);
+        if (result === null) {
+            throw new NotFoundException({
+                statusCode: HttpStatus.NOT_FOUND,
+                message: 'User is not found',
+            });
+        } else if (result.id) {
+            return new NestResponseBuilder()
+                .withStatus(HttpStatus.OK)
+                .withBody(result)
+                .build();
+        }
+        return new NestResponseBuilder()
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withBody(result)
+            .build();
     }
 
     @UseGuards(JwtAuthGuard)
     @Delete('/users/delete/:id')
-    async removeUserDevice(@Param('id') id: number, @Request() req) {
+    async removeUserDevice(@Param('id') id: number, @Request() req: any) {
         const result = await this.usersService.removeUserDevice(+id, req);
-
         if (isNumber(result)) {
             if (result === 0) {
                 return new NestResponseBuilder()
