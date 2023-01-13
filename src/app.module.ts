@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { JwtModule } from '@nestjs/jwt';
@@ -8,6 +8,8 @@ import { AuthService } from './core/auth/auth.service';
 import { AppController } from './app.controller';
 import { JwtStrategy } from './core/auth/guards/strategy/jwt.strategy';
 import { DevicesModule } from './devices/devices.module';
+import { TransformResponseInterceptor } from './core/http/transform-response-interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -26,7 +28,15 @@ import { DevicesModule } from './devices/devices.module';
     ...databaseProviders,
     ...userProviders,
     AuthService, 
-    JwtStrategy   
+    JwtStrategy,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformResponseInterceptor,
+    } 
   ],
 })
 export class AppModule { }
