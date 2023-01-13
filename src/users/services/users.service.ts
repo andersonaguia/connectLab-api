@@ -22,7 +22,7 @@ export class UsersService {
     private userDevicesLocationRepository: Repository<UserDeviceLocationEntity>
   ) { }
 
-  async findUser(req): Promise<UserEntity> {
+  async findUser(req: any): Promise<UserEntity> {
     const { user } = req;
     return new Promise(async (resolve, reject) => {
       try {
@@ -36,13 +36,12 @@ export class UsersService {
           if (getUser.phone?.length < 1) {
             delete getUser.phone;
           }
-
           delete getUser.password;
           delete getUser.salt;
-
           resolve(getUser);
         }
 
+        resolve(null);
       } catch (error) {
         reject({
           code: error.code,
@@ -52,7 +51,7 @@ export class UsersService {
     })
   }
 
-  async addDeviceToUser(deviceData: addDeviceToUserDTO, req) {
+  async addDeviceToUser(deviceData: addDeviceToUserDTO, req: any): Promise<UserDevicesEntity> {
     const { user } = req;
     const { deviceId, local, room } = deviceData;
 
@@ -78,13 +77,73 @@ export class UsersService {
           userDevice.room = room;
 
           const deviceCreated = await this.userDevicesRepository.save(userDevice);
-
           resolve(deviceCreated);
         }
+        resolve(null);
+      } catch (error) {
+        console.log("catch")
         reject({
-          code: 404,
-          detail: 'device id is not found'
+          code: error.code,
+          detail: error.detail
         })
+      }
+    })
+  }
+
+  findUserDeviceById(userDeviceId: number, req: any): Promise<userDeviceDetailDTO> {
+    const { id } = req.user;
+    return new Promise(async (resolve, reject) => {
+      try {
+        const userDevice = await this.userDeviceExists(userDeviceId);
+
+        if ((userDevice !== null) && userDevice.userId.id === id) {
+          const deviceDetails = this.modelDetailsUserDevices(userDevice);
+          resolve(deviceDetails);
+        }
+        resolve(null);
+
+      } catch (error) {
+        reject({
+          code: error.code,
+          detail: error.detail
+        })
+      }
+    })
+
+  }
+
+  async findAllUserDevices(req: any, page: number, limit: number, local: number): Promise<userDeviceDetailDTO[]> {
+    const userId = req.user.id;
+    return new Promise(async (resolve, reject) => {
+      try {
+        let allUserDevices: UserDevicesEntity[] = [];
+        if (local === null) {
+          allUserDevices = await this.userDevicesRepository.find({
+            where: {
+              userId: Equal(userId)
+            },
+            skip: (page - 1) * limit,
+            take: limit
+          })
+        } else {
+          allUserDevices = await this.userDevicesRepository.find({
+            where: {
+              userId: Equal(userId),
+              location: Equal(local)
+            },
+            skip: (page - 1) * limit,
+            take: limit
+          })
+        }
+        const userDevices: userDeviceDetailDTO[] = [];
+        if (allUserDevices.length > 0) {
+
+          allUserDevices.map((userDevice) => {
+            userDevices.push(this.modelDetailsUserDevices(userDevice));
+          })
+          resolve(userDevices);
+        }
+        resolve(userDevices);
       } catch (error) {
         reject({
           code: error.code,
@@ -94,48 +153,10 @@ export class UsersService {
     })
   }
 
-  async findUserDeviceDetail(deviceId: number, req) {
-    const { id } = req.user;
-    const userDevice: UserDevicesEntity = await this.userDevicesRepository.findOne({
-      where:
-      {
-        id: deviceId,
-        userId: Equal(id)
-      }
-    })
-
-    if (userDevice) {
-      const deviceDetails = this.deviceToReturn(userDevice);
-
-      return deviceDetails;
-    }
-    throw new NotFoundException('Device id is not found.')
-  }
-
-  async findAllUserDevices(req, page: number, limit: number, local: number) {
-    const allUserDevices: UserDevicesEntity[] = await this.userDevicesRepository.find({
-      where: {
-        userId: Equal(req.user.id),
-        location: Equal(local)
-      },
-      skip: (page - 1) * limit,
-      take: limit
-    })
-
-    if (allUserDevices.length > 0) {
-      const userDevices = [];
-      allUserDevices.map((userDevice) => {
-        userDevices.push(this.deviceToReturn(userDevice));
-      })
-      return userDevices;
-    }
-    return null;
-  }
-
-  async deviceExists(deviceId: number) {
+  async deviceExists(deviceId: number): Promise<boolean> {
     const device = await this.deviceRepository.findOne({
       where: {
-        _id: deviceId,
+        _id: Equal(deviceId),
       }
     })
 
@@ -145,7 +166,20 @@ export class UsersService {
     return false;
   }
 
-  deviceToReturn(userDevice) {
+  async userDeviceExists(userDeviceId: number): Promise<UserDevicesEntity> {
+    const userDevice: UserDevicesEntity = await this.userDevicesRepository.findOne({
+      where: {
+        id: Equal(userDeviceId),
+      }
+    })
+
+    if (userDevice) {
+      return userDevice;
+    }
+    return null;
+  }
+
+  modelDetailsUserDevices(userDevice: any): userDeviceDetailDTO {
     const deviceDetails: userDeviceDetailDTO = new userDeviceDetailDTO();
     deviceDetails.id = userDevice.id;
     deviceDetails.name = userDevice.device.name;
@@ -157,5 +191,26 @@ export class UsersService {
     deviceDetails.macAddress = userDevice.device.info.macAddress;
 
     return deviceDetails;
+  }
+
+  async removeUserDevice(id: number, req: any): Promise<number> {
+    const userId = req.user.id;
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { affected } = await this.userDevicesRepository.delete({
+          id: id,
+          userId: userId
+        })
+        if (affected === 0) {
+          resolve(affected)
+        }
+        resolve(affected)
+      } catch (error) {
+        reject({
+          code: error.code,
+          detail: error.detail
+        })
+      }
+    })
   }
 }
