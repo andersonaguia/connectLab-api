@@ -68,10 +68,13 @@ export class AuthService {
                 if (user === null) {
                     resolve(null)
                 }
+                const firstName = user.fullName.split(' ');
+
                 const jwtPayload = {
                     id: user.id,
-                    fullName: user.fullName,
-                    email: user.email,
+                    firstName: firstName[0],
+                    photoUrl: user.photoUrl,
+                    email: user.email,                    
                     role: user.role
                 }
                 const token = new TokenDTO();

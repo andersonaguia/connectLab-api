@@ -1,13 +1,12 @@
-import { IsEmail, IsString, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 
 export class CredentialsDTO {
-    @IsString()
+    @IsNotEmpty({ message: 'email cannot be empty' })
     @IsEmail()
-    @MaxLength(30)
     email: string;
 
-    @IsString()
-    @MinLength(6)
-    @MaxLength(20)
+    @IsNotEmpty({ message: 'password cannot be empty' })
+    @IsString({ message: 'password must be a string' })
+    @MinLength(8)
     password: string;
 }
