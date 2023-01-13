@@ -8,6 +8,7 @@ import { CredentialsDTO } from './dto/credentials.dto';
 import { AddressEntity } from 'src/users/entities/address.entity';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 import { UpdateUserPasswordDTO } from './dto/updateUserPassword.dto';
+import { TokenDTO } from './dto/token.dto';
 
 @Injectable()
 export class AuthService {
@@ -26,20 +27,29 @@ export class AuthService {
         return await this.createUser(createUserDto)
     }
 
-    async signIn(credentials: CredentialsDTO) {
-        const user = await this.checkCredentials(credentials);
-        if (user === null) {
-            throw new UnauthorizedException('Incorrect email or password')
-        }
-
-        const jwtPayload = {
-            id: user.id,
-            fullName: user.fullName,
-            email: user.email,
-            role: user.role
-        }
-        const token = await this.jwtService.sign(jwtPayload);
-        return { token }
+    async signIn(credentials: CredentialsDTO): Promise<TokenDTO> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const user = await this.checkCredentials(credentials);
+                if (user === null) {
+                    resolve(null)
+                }
+                const jwtPayload = {
+                    id: user.id,
+                    fullName: user.fullName,
+                    email: user.email,
+                    role: user.role
+                }
+                const token = new TokenDTO();
+                token.token = this.jwtService.sign(jwtPayload);
+                resolve(token)
+            } catch (error) {
+                reject({
+                    code: error.code,
+                    detail: error.detail
+                });
+            }
+        })
     }
 
     createUser(userData: CreateUserDto): Promise<UserEntity> {
