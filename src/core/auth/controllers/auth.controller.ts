@@ -15,30 +15,44 @@ export class AuthController {
 
     @Post('/auth/signup')
     async signUp(@Body(ValidationPipe) createUserDto: CreateUserDto) {
-        const result = await this.authService.signUp(createUserDto);
-
-        if (result === null) {
+        try {
+            const result = await this.authService.signUp(createUserDto);
+            if (result === null) {
+                return new NestResponseBuilder()
+                    .withStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+                    .withBody({
+                        statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: "Passwords do not match"
+                    })
+                    .build();
+            } else if (result.id) {
+                return new NestResponseBuilder()
+                    .withStatus(HttpStatus.CREATED)
+                    .withBody({
+                        statusCode: HttpStatus.CREATED,
+                        message: 'Successful registration'
+                    })
+                    .build();
+            }
             return new NestResponseBuilder()
-                .withStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-                .withBody({
-                    statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-                    message: "Passwords do not match"
-                })
-                .build();
-        } else if (result.id) {
-            return new NestResponseBuilder()
-                .withStatus(HttpStatus.CREATED)
-                .withBody({
-                    statusCode: HttpStatus.CREATED,
-                    message: 'Successful registration'
-                })
+                .withStatus(HttpStatus.BAD_REQUEST)
+                .withBody(result)
                 .build();
         }
-        return new NestResponseBuilder()
-            .withStatus(HttpStatus.BAD_REQUEST)
-            .withBody(result)
-            .build();
+        catch (error) {
+            if (error.code === "23505") {
+                return new NestResponseBuilder()
+                    .withStatus(HttpStatus.CONFLICT)
+                    .withBody({
+                        code: error.code,
+                        detail: error.detail
+                    })
+                    .build();
+            }
+        }
+
     }
+
 
     @Post('/auth/signin')
     async signIn(

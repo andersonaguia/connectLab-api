@@ -53,10 +53,7 @@ export class AuthService {
                 delete userCreated.salt;
                 resolve(userCreated);
             } catch (error) {
-                reject({
-                    code: error.code,
-                    detail: error.detail
-                });
+                reject(error);
             }
         })
     }
@@ -74,11 +71,11 @@ export class AuthService {
                     id: user.id,
                     firstName: firstName[0],
                     photoUrl: user.photoUrl,
-                    email: user.email,                    
+                    email: user.email,
                     role: user.role
                 }
-                const token = new TokenDTO();                
-                token.token = this.jwtService.sign(jwtPayload);              
+                const token = new TokenDTO();
+                token.token = this.jwtService.sign(jwtPayload);
                 resolve(token)
             } catch (error) {
                 reject({
