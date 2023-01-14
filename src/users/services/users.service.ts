@@ -145,6 +145,7 @@ export class UsersService {
           allUserDevices.map((userDevice) => {
             userDevices.push(this.modelDetailsUserDevices(userDevice));
           })
+          
           resolve(userDevices);
         }
         resolve(userDevices);
@@ -191,8 +192,8 @@ export class UsersService {
     deviceDetails.madeBy = userDevice.device.madeBy;
     deviceDetails.isOn = userDevice.isOn;
     deviceDetails.information = userDevice.information;
-    deviceDetails.ipAddress = userDevice.device.info.ipAddress;
-    deviceDetails.macAddress = userDevice.device.info.macAddress;
+    deviceDetails.ipAddress = userDevice.device.info.ip_address;
+    deviceDetails.macAddress = userDevice.device.info.mac_address;
 
     return deviceDetails;
   }
