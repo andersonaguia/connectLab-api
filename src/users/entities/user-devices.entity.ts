@@ -1,5 +1,5 @@
 import { DeviceEntity } from "src/devices/entities/device.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UserDeviceLocationEntity } from "./user-devices-location.entity";
 import { UserEntity } from "./user.entity";
 
@@ -40,4 +40,10 @@ export class UserDevicesEntity {
     )
     @JoinColumn({ name: 'user_id' })
     userId: UserEntity;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
 }
