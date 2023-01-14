@@ -39,6 +39,12 @@ export class UsersService {
           if (userExists.phone?.length < 1) {
             delete userExists.phone;
           }
+          delete userExists.id;
+          delete userExists.createdAt;
+          delete userExists.updatedAt;
+          delete userExists.active;
+          delete userExists.role;
+          delete userExists.address.id;
           delete userExists.password;
           delete userExists.salt;
           resolve(userExists);
