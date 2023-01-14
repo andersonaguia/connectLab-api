@@ -1,8 +1,9 @@
-import { Body, Controller, HttpStatus, Patch, UseGuards } from "@nestjs/common";
+import { Body, Controller, HttpStatus, Patch, Post, UseGuards, ValidationPipe } from "@nestjs/common";
 import { isNumber } from "class-validator";
 import { NestResponseBuilder } from "src/core/http/nest-response-builder";
-import { AuthService } from "../auth.service";
+import { AuthService } from "../services/auth.service";
 import { ChangePasswordDTO } from "../dto/change-password.dto";
+import { CredentialsDTO } from "../dto/credentials.dto";
 import { JwtAuthGuard } from "../guards/jwt-auth.guard";
 
 @Controller()
@@ -11,6 +12,32 @@ export class AuthController {
         private readonly authService: AuthService,
         //private readonly usersService: UsersService
     ) { }
+
+    @Post('/auth/signin')
+    async signIn(
+        @Body(ValidationPipe)
+        credentialsDto: CredentialsDTO
+    ) {
+        const result = await this.authService.signIn(credentialsDto);
+        if (result === null) {
+            return new NestResponseBuilder()
+                .withStatus(HttpStatus.UNAUTHORIZED)
+                .withBody({
+                    statusCode: HttpStatus.UNAUTHORIZED,
+                    message: "Incorrect email or password"
+                })
+                .build();
+        } else if (result.token) {
+            return new NestResponseBuilder()
+                .withStatus(HttpStatus.OK)
+                .withBody(result)
+                .build();
+        }
+        return new NestResponseBuilder()
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withBody(result)
+            .build();
+    }
 
     @UseGuards(JwtAuthGuard)
     @Patch('/auth/changepassword')

@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query, HttpStatus } from '@nestjs/common';
-import { AuthService } from 'src/core/auth/auth.service';
+import { AuthService } from 'src/core/auth/services/auth.service';
 import { UsersService } from '../services/users.service';
 import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
 import { ChangePasswordDTO } from 'src/core/auth/dto/change-password.dto';
