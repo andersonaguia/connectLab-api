@@ -1,11 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query, HttpStatus } from '@nestjs/common';
 import { AuthService } from 'src/core/auth/auth.service';
 import { UsersService } from '../services/users.service';
 import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
 import { ChangePasswordDTO } from 'src/core/auth/dto/change-password.dto';
 import { addDeviceToUserDTO } from '../dto/add-device-to-user.dto';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
-import { UserDevicesEntity } from '../entities/user-devices.entity';
 import { isArray, isNumber } from 'class-validator';
 
 @Controller()
@@ -97,7 +96,7 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     @Post('/users/adddevice')
     async addDeviceToUser(@Body() deviceData: addDeviceToUserDTO, @Request() req: any) {
-        const result: UserDevicesEntity = await this.usersService.addDeviceToUser(deviceData, req);
+        const result = await this.usersService.addDeviceToUser(deviceData, req);
         if (result === null) {
             return new NestResponseBuilder()
                 .withStatus(HttpStatus.NOT_FOUND)
@@ -105,12 +104,17 @@ export class UsersController {
                     statusCode: HttpStatus.NOT_FOUND,
                     message: "deviceId is not found"
                 })
-                .build();            
+                .build();
         } else if (result.id) {
             return new NestResponseBuilder()
                 .withStatus(HttpStatus.CREATED)
                 .withHeaders({ Location: `users/devicedetails/${result.id}` })
                 .withBody("Successfully registered device")
+                .build();
+        } else if (result === undefined) {
+            return new NestResponseBuilder()
+                .withStatus(HttpStatus.BAD_REQUEST)
+                .withBody("Invalid local")
                 .build();
         }
         return new NestResponseBuilder()
@@ -130,7 +134,7 @@ export class UsersController {
                     statusCode: HttpStatus.NOT_FOUND,
                     message: "User is not found"
                 })
-                .build(); 
+                .build();
         } else if (result.id) {
             return new NestResponseBuilder()
                 .withStatus(HttpStatus.OK)

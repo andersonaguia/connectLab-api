@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, Prim
 import { AddressEntity } from "./address.entity";
 import * as bcrypt from 'bcrypt';
 import { UserRole } from "../enum/user.role";
+import { UserDevicesEntity } from "./user-devices.entity";
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -46,6 +47,12 @@ export class UserEntity {
     enum: UserRole,
     default: UserRole.CLIENT})
     role: UserRole;
+
+    @OneToMany(
+        () => UserDevicesEntity,
+        (userDevice) => userDevice.id
+    )
+    userDevices: UserDevicesEntity;
 
     async checkPassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt)

@@ -1,5 +1,5 @@
 import { UserDevicesEntity } from "src/users/entities/user-devices.entity";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { DeviceInfoEntity } from "./device-info.entity";
 
 @Entity({ name: 'devices' })
@@ -25,4 +25,11 @@ export class DeviceEntity {
         { cascade: true, eager: true, onDelete: 'SET NULL' })
     @JoinColumn({ name: 'deviceInfo_id' })
     info: DeviceInfoEntity;
+
+    @OneToMany(
+        () => UserDevicesEntity,
+        (userDevice) => userDevice.id
+    )
+    userDevice: UserDevicesEntity;
+
 }

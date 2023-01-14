@@ -51,7 +51,7 @@ export class UsersService {
     })
   }
 
-  async addDeviceToUser(deviceData: addDeviceToUserDTO, req: any): Promise<UserDevicesEntity> {
+  async addDeviceToUser(deviceData: addDeviceToUserDTO, req: any): Promise<UserDevicesEntity>{
     const { user } = req;
     const { deviceId, local, room } = deviceData;
 
@@ -65,19 +65,23 @@ export class UsersService {
           const deviceLocals = await this.userDevicesLocationRepository.find();
           const localId = deviceLocals.find(el => el.deviceLocation === local);
 
-          const idLocal = new UserDeviceLocationEntity();
-          idLocal.id = localId.id;
+          if (!localId) {
+            resolve(null);
+          } else {
+            const idLocal = new UserDeviceLocationEntity();
+            idLocal.id = localId.id;
 
-          const userDevice = this.userDevicesRepository.create();
-          userDevice.isOn = true;
-          userDevice.userId = user.id;
-          userDevice.information = "Dispositivo Ligado";
-          userDevice.device = device;
-          userDevice.location = idLocal;
-          userDevice.room = room;
+            const userDevice = this.userDevicesRepository.create();
+            userDevice.isOn = true;
+            userDevice.userId = user.id;
+            userDevice.information = "Dispositivo Ligado";
+            userDevice.device = device;
+            userDevice.location = idLocal;
+            userDevice.room = room;
 
-          const deviceCreated = await this.userDevicesRepository.save(userDevice);
-          resolve(deviceCreated);
+            const deviceCreated = await this.userDevicesRepository.save(userDevice);
+            resolve(deviceCreated);
+          }
         }
         resolve(null);
       } catch (error) {
@@ -141,6 +145,7 @@ export class UsersService {
           allUserDevices.map((userDevice) => {
             userDevices.push(this.modelDetailsUserDevices(userDevice));
           })
+          
           resolve(userDevices);
         }
         resolve(userDevices);
@@ -187,8 +192,8 @@ export class UsersService {
     deviceDetails.madeBy = userDevice.device.madeBy;
     deviceDetails.isOn = userDevice.isOn;
     deviceDetails.information = userDevice.information;
-    deviceDetails.ipAddress = userDevice.device.info.ipAddress;
-    deviceDetails.macAddress = userDevice.device.info.macAddress;
+    deviceDetails.ipAddress = userDevice.device.info.ip_address;
+    deviceDetails.macAddress = userDevice.device.info.mac_address;
 
     return deviceDetails;
   }
