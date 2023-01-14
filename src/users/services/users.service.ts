@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Equal, Repository } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { AuthService } from 'src/core/auth/auth.service';
@@ -7,6 +7,9 @@ import { UserDevicesEntity } from '../entities/user-devices.entity';
 import { DeviceEntity } from 'src/devices/entities/device.entity';
 import { UserDeviceLocationEntity } from '../entities/user-devices-location.entity';
 import { userDeviceDetailDTO } from '../dto/user-device-detail.dto';
+import { UpdateUserDeviceDTO } from '../dto/update-user-device.dto';
+import { stat } from 'fs';
+import { DeviceDataDTO } from '../dto/device-data.dto';
 
 @Injectable()
 export class UsersService {
@@ -26,19 +29,19 @@ export class UsersService {
     const { user } = req;
     return new Promise(async (resolve, reject) => {
       try {
-        const getUser = await this.userRepository.findOne({
+        const userExists = await this.userRepository.findOne({
           where: {
             id: Equal(user.id)
           },
         })
 
-        if (getUser) {
-          if (getUser.phone?.length < 1) {
-            delete getUser.phone;
+        if (userExists) {
+          if (userExists.phone?.length < 1) {
+            delete userExists.phone;
           }
-          delete getUser.password;
-          delete getUser.salt;
-          resolve(getUser);
+          delete userExists.password;
+          delete userExists.salt;
+          resolve(userExists);
         }
 
         resolve(null);
@@ -51,7 +54,7 @@ export class UsersService {
     })
   }
 
-  async addDeviceToUser(deviceData: addDeviceToUserDTO, req: any): Promise<UserDevicesEntity>{
+  async addDeviceToUser(deviceData: addDeviceToUserDTO, req: any): Promise<UserDevicesEntity> {
     const { user } = req;
     const { deviceId, local, room } = deviceData;
 
@@ -78,6 +81,8 @@ export class UsersService {
             userDevice.device = device;
             userDevice.location = idLocal;
             userDevice.room = room;
+            userDevice.createdAt = new Date();
+            userDevice.updatedAt = new Date();
 
             const deviceCreated = await this.userDevicesRepository.save(userDevice);
             resolve(deviceCreated);
@@ -145,7 +150,7 @@ export class UsersService {
           allUserDevices.map((userDevice) => {
             userDevices.push(this.modelDetailsUserDevices(userDevice));
           })
-          
+
           resolve(userDevices);
         }
         resolve(userDevices);
@@ -218,4 +223,28 @@ export class UsersService {
       }
     })
   }
+
+  updateDeviceStatus(deviceData: DeviceDataDTO, req: any): Promise<number> {
+    const { user } = req;
+    const { deviceId, isOn } = deviceData;
+    const dataToUpdate = new UpdateUserDeviceDTO()
+    dataToUpdate.isOn = isOn;
+    isOn ? dataToUpdate.information = "Dispositivo Ligado" : dataToUpdate.information = "Dispositivo Desligado";
+    dataToUpdate.updatedAt = new Date();
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { affected } = await this.userDevicesRepository.update({ id: deviceId, userId: user.id }, dataToUpdate);
+            if (affected === 0) {
+                resolve(affected)
+            }
+            resolve(affected)
+        } catch (error) {
+            reject({
+                code: error.code,
+                detail: error.detail
+            })
+        }
+    })
+}
 }

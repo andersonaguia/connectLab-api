@@ -6,6 +6,8 @@ import { ChangePasswordDTO } from 'src/core/auth/dto/change-password.dto';
 import { addDeviceToUserDTO } from '../dto/add-device-to-user.dto';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
 import { isArray, isNumber } from 'class-validator';
+import { UpdateUserDeviceDTO } from '../dto/update-user-device.dto';
+import { DeviceDataDTO } from '../dto/device-data.dto';
 
 @Controller()
 export class UsersController {
@@ -166,6 +168,33 @@ export class UsersController {
                 return new NestResponseBuilder()
                     .withStatus(HttpStatus.OK)
                     .withBody("Device removed successfully")
+                    .build();
+            }
+        }
+        return new NestResponseBuilder()
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withBody(result)
+            .build();
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch('/users/updatestatusdevice')
+    async updateDeviceStatus(@Body() deviceData: DeviceDataDTO, @Request() req: any) {
+        const result = await this.usersService.updateDeviceStatus(deviceData, req);
+        
+        if (isNumber(result)) {
+            if (result > 0) {
+                return new NestResponseBuilder()
+                    .withStatus(HttpStatus.OK)
+                    .withBody("Device status updated successfully")
+                    .build();
+            } else {
+                return new NestResponseBuilder()
+                    .withStatus(HttpStatus.NOT_FOUND)
+                    .withBody({
+                        code: 20000,
+                        detail: 'This deviceId not found or unable to update'
+                    })
                     .build();
             }
         }
