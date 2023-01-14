@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Equal, Repository } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
-import { AuthService } from 'src/core/auth/auth.service';
+import { AuthService } from 'src/core/auth/services/auth.service';
 import { addDeviceToUserDTO } from '../dto/add-device-to-user.dto';
 import { UserDevicesEntity } from '../entities/user-devices.entity';
 import { DeviceEntity } from 'src/devices/entities/device.entity';

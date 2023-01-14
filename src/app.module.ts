@@ -4,7 +4,7 @@ import { UsersModule } from './users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { databaseProviders } from './core/database/database.providers';
 import { userProviders } from './users/users.providers';
-import { AuthService } from './core/auth/auth.service';
+import { AuthService } from './core/auth/services/auth.service';
 import { AppController } from './app.controller';
 import { JwtStrategy } from './core/auth/guards/strategy/jwt.strategy';
 import { DevicesModule } from './devices/devices.module';

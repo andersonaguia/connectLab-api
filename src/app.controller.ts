@@ -1,6 +1,6 @@
-import { Body, Controller, HttpException, HttpStatus, Post, UnprocessableEntityException, ValidationPipe } from "@nestjs/common";
-import { AuthService } from "./core/auth/auth.service";
-import { CredentialsDTO } from "./core/auth/dto/credentials.dto";
+import { Body, Controller, HttpStatus, Post, ValidationPipe } from "@nestjs/common";
+import { AuthService } from "./core/auth/services/auth.service";
+
 import { NestResponseBuilder } from "./core/http/nest-response-builder";
 import { CreateUserDto } from "./users/dto/create-user.dto";
 
@@ -13,7 +13,7 @@ export class AppController {
     @Post('/auth/signup')
     async signUp(@Body(ValidationPipe) createUserDto: CreateUserDto) {
         const result = await this.authService.signUp(createUserDto);
-        
+
         if (result === null) {
             return new NestResponseBuilder()
                 .withStatus(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -51,31 +51,5 @@ export class AppController {
                  } catch (error) {
                      
                  }*/
-    }
-
-    @Post('/auth/signin')
-    async signIn(
-        @Body(ValidationPipe)
-        credentialsDto: CredentialsDTO
-    ) {
-        const result = await this.authService.signIn(credentialsDto);
-        if (result === null) {
-            return new NestResponseBuilder()
-                .withStatus(HttpStatus.UNAUTHORIZED)
-                .withBody({
-                    statusCode: HttpStatus.UNAUTHORIZED,
-                    message: "Incorrect email or password"
-                })
-                .build();
-        } else if (result.token) {
-            return new NestResponseBuilder()
-                .withStatus(HttpStatus.OK)
-                .withBody(result)
-                .build();
-        }
-        return new NestResponseBuilder()
-            .withStatus(HttpStatus.BAD_REQUEST)
-            .withBody(result)
-            .build();
     }
 }

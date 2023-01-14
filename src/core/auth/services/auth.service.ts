@@ -4,11 +4,11 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UserEntity } from 'src/users/entities/user.entity';
-import { CredentialsDTO } from './dto/credentials.dto';
+import { CredentialsDTO } from '../dto/credentials.dto';
 import { AddressEntity } from 'src/users/entities/address.entity';
-import { ChangePasswordDTO } from './dto/change-password.dto';
-import { UpdateUserPasswordDTO } from './dto/updateUserPassword.dto';
-import { TokenDTO } from './dto/token.dto';
+import { ChangePasswordDTO } from '../dto/change-password.dto';
+import { UpdateUserPasswordDTO } from '../dto/updateUserPassword.dto';
+import { TokenDTO } from '../dto/token.dto';
 
 @Injectable()
 export class AuthService {
@@ -77,8 +77,8 @@ export class AuthService {
                     email: user.email,                    
                     role: user.role
                 }
-                const token = new TokenDTO();
-                token.token = this.jwtService.sign(jwtPayload);
+                const token = new TokenDTO();                
+                token.token = this.jwtService.sign(jwtPayload);              
                 resolve(token)
             } catch (error) {
                 reject({
