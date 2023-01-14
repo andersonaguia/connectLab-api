@@ -40,7 +40,7 @@ export class AuthService {
                 const user = this.userRepository.create();
 
                 user.fullName = fullName;
-                photoUrl.length > 0 ? user.photoUrl = photoUrl : user.photoUrl = "url da foto";
+                photoUrl.length > 0 ? user.photoUrl = photoUrl : user.photoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeAKvlSuCAVIu5B45Fgjsdrasym0LWbSzbVQ&usqp=CAU";
                 user.email = email;
                 user.phone = phone;
                 user.address = createAddress;
