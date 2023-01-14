@@ -233,18 +233,18 @@ export class UsersService {
     dataToUpdate.updatedAt = new Date();
 
     return new Promise(async (resolve, reject) => {
-        try {
-            const { affected } = await this.userDevicesRepository.update({ id: deviceId, userId: user.id }, dataToUpdate);
-            if (affected === 0) {
-                resolve(affected)
-            }
-            resolve(affected)
-        } catch (error) {
-            reject({
-                code: error.code,
-                detail: error.detail
-            })
+      try {
+        const { affected } = await this.userDevicesRepository.update({ id: deviceId, userId: user.id }, dataToUpdate);
+        if (affected === 0) {
+          resolve(affected)
         }
+        resolve(affected)
+      } catch (error) {
+        reject({
+          code: error.code,
+          detail: error.detail
+        })
+      }
     })
-}
+  }
 }
