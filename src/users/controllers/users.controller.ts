@@ -6,7 +6,6 @@ import { ChangePasswordDTO } from 'src/core/auth/dto/change-password.dto';
 import { addDeviceToUserDTO } from '../dto/add-device-to-user.dto';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
 import { isArray, isNumber } from 'class-validator';
-import { UpdateUserDeviceDTO } from '../dto/update-user-device.dto';
 import { DeviceDataDTO } from '../dto/device-data.dto';
 
 @Controller()
@@ -15,40 +14,6 @@ export class UsersController {
         private readonly authService: AuthService,
         private readonly usersService: UsersService
     ) { }
-
-    @UseGuards(JwtAuthGuard)
-    @Patch('/auth/changepassword')
-    async changePassword(@Body() data: ChangePasswordDTO) {
-        const result = await this.authService.changePassword(data);
-        if (result === null) {
-            return new NestResponseBuilder()
-                .withStatus(HttpStatus.UNAUTHORIZED)
-                .withBody({
-                    statusCode: HttpStatus.UNAUTHORIZED,
-                    message: "Incorrect email or oldPassword"
-                })
-                .build();
-        } else if (isNumber(result)) {
-            if (result > 0) {
-                return new NestResponseBuilder()
-                    .withStatus(HttpStatus.OK)
-                    .withBody("Password changed successfully")
-                    .build();
-            } else {
-                return new NestResponseBuilder()
-                    .withStatus(HttpStatus.NOT_FOUND)
-                    .withBody({
-                        code: 20000,
-                        detail: 'This id not found or unable to update'
-                    })
-                    .build();
-            }
-        }
-        return new NestResponseBuilder()
-            .withStatus(HttpStatus.BAD_REQUEST)
-            .withBody(result)
-            .build();
-    }
 
     @UseGuards(JwtAuthGuard)
     @Get('/users/devicedetails/:id')

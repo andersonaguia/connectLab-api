@@ -10,6 +10,7 @@ import { JwtStrategy } from './core/auth/guards/strategy/jwt.strategy';
 import { DevicesModule } from './devices/devices.module';
 import { TransformResponseInterceptor } from './core/http/transform-response-interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AuthModule } from './core/auth/auth.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     }),
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     UsersModule,
-    DevicesModule
+    DevicesModule, 
+    AuthModule
   ],
   controllers: [AppController],
   providers: [
