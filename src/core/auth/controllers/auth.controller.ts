@@ -5,13 +5,40 @@ import { AuthService } from "../services/auth.service";
 import { ChangePasswordDTO } from "../dto/change-password.dto";
 import { CredentialsDTO } from "../dto/credentials.dto";
 import { JwtAuthGuard } from "../guards/jwt-auth.guard";
+import { CreateUserDto } from "src/users/dto/create-user.dto";
 
 @Controller()
 export class AuthController {
     constructor(
-        private readonly authService: AuthService,
-        //private readonly usersService: UsersService
+        private readonly authService: AuthService
     ) { }
+
+    @Post('/auth/signup')
+    async signUp(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+        const result = await this.authService.signUp(createUserDto);
+
+        if (result === null) {
+            return new NestResponseBuilder()
+                .withStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+                .withBody({
+                    statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+                    message: "Passwords do not match"
+                })
+                .build();
+        } else if (result.id) {
+            return new NestResponseBuilder()
+                .withStatus(HttpStatus.CREATED)
+                .withBody({
+                    statusCode: HttpStatus.CREATED,
+                    message: 'Successful registration'
+                })
+                .build();
+        }
+        return new NestResponseBuilder()
+            .withStatus(HttpStatus.BAD_REQUEST)
+            .withBody(result)
+            .build();
+    }
 
     @Post('/auth/signin')
     async signIn(
