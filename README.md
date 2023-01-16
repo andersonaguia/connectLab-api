@@ -66,7 +66,8 @@ $ npm run start:prod
 ```
 
 ## 🧭 Funcionamento dos endpoints
-Importar o arquivo 
+
+Importar o arquivo insomnia.json contido na pasta public/insomnia
 
 ### Criar usuário (http://localhost:3000/auth/signup)
 

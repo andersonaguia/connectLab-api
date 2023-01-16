@@ -46,13 +46,20 @@ export class DevicesService {
   }
 
   async findAllDevices(): Promise<DeviceEntity[]> {
-    const allDevices = await this.findDevices();
-    if (allDevices.length > 0) {
-      return allDevices;
-    }
-    this.insertDevices();
-    const devices = await this.findDevices();
-    return devices;
+    return new Promise(async (resolve, reject) => {
+      try {
+        const allDevices = await this.findDevices();
+        if (allDevices.length > 0) {
+          resolve(allDevices);
+        }
+        this.insertDevices();
+        const devices = await this.findDevices();
+        resolve(devices);
+
+      } catch (error) {
+        reject(error);
+      }
+    })
   }
 
   insertDevices() {
@@ -62,7 +69,7 @@ export class DevicesService {
         const deviceToInsert = await this.deviceRepository.create(device);
         const deviceCreated = await this.deviceRepository.save(deviceToInsert);
       } catch (error) {
-        console.log(error);
+        return error;
       }
     })
     return
