@@ -61,38 +61,37 @@ export class UsersService {
     const { deviceId, local, room } = deviceData;
 
     return new Promise(async (resolve, reject) => {
-      try {
+      try {        
         const deviceExists = await this.deviceExists(deviceId);
-
         if (deviceExists) {
           const device = this.deviceRepository.create();
           device._id = deviceId;
-          const deviceLocals = await this.userDevicesLocationRepository.find();
-          const localId = deviceLocals.find(el => el.deviceLocation === local);
-
-          if (!localId) {
-            resolve(null);
+          const deviceLocal = await this.userDevicesLocationRepository.findOne({
+            where: {
+              deviceLocation: Equal(local.toUpperCase())
+            }
+          });
+          if (!deviceLocal) {
+            resolve(null);  
           } else {
-            const idLocal = new UserDeviceLocationEntity();
-            idLocal.id = localId.id;
+            const location = new UserDeviceLocationEntity();
+            location.id = deviceLocal.id;
 
             const userDevice = this.userDevicesRepository.create();
             userDevice.isOn = true;
             userDevice.userId = user.id;
             userDevice.information = "Dispositivo Ligado";
             userDevice.device = device;
-            userDevice.location = idLocal;
+            userDevice.location = location;
             userDevice.room = room;
             userDevice.createdAt = new Date();
             userDevice.updatedAt = new Date();
-
             const deviceCreated = await this.userDevicesRepository.save(userDevice);
             resolve(deviceCreated);
           }
         }
         resolve(null);
       } catch (error) {
-        console.log("catch")
         reject(error)
       }
     })
@@ -109,12 +108,10 @@ export class UsersService {
           resolve(deviceDetails);
         }
         resolve(null);
-
       } catch (error) {
         reject(error)
       }
     })
-
   }
 
   async findAllUserDevices(req: any, page: number, limit: number, local: number): Promise<userDeviceDetailDTO[]> {

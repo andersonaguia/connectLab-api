@@ -12,8 +12,7 @@ export class DevicesService {
   constructor(private jwtService: JwtService,
     @Inject('DEVICE_REPOSITORY')
     private deviceRepository: Repository<DeviceEntity>,
-    @Inject('DEVICE_INFO_REPOSITORY')
-
+    @Inject('DEVICES_LOCATION_REPOSITORY')
     private devicesLocationRepository: Repository<UserDeviceLocationEntity>
   ) { }
 
@@ -36,11 +35,22 @@ export class DevicesService {
     return new Promise(async (resolve, reject) => {
       try {
         const localDevice = this.devicesLocationRepository.create();
-        localDevice.deviceLocation = local;
+        localDevice.deviceLocation = local.toUpperCase();
         const localDeviceCreated = await this.devicesLocationRepository.save(localDevice);
         resolve(localDeviceCreated);
       } catch (error) {
-        reject({ code: error.code, detail: error.detail })
+        reject(error)
+      }
+    })
+  }
+
+  findAllLocals(): Promise<UserDeviceLocationEntity[]> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const allLocals = await this.devicesLocationRepository.find();
+        resolve(allLocals)
+      } catch (error) {
+        reject(error);
       }
     })
   }
@@ -54,6 +64,7 @@ export class DevicesService {
         }
         this.insertDevices();
         const devices = await this.findDevices();
+
         resolve(devices);
 
       } catch (error) {
@@ -66,7 +77,7 @@ export class DevicesService {
     const devices = devicesArray;
     devices.map(async (device) => {
       try {
-        const deviceToInsert = await this.deviceRepository.create(device);
+        const deviceToInsert = this.deviceRepository.create(device);
         const deviceCreated = await this.deviceRepository.save(deviceToInsert);
       } catch (error) {
         return error;

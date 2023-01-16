@@ -19,9 +19,9 @@ export class UserDevicesEntity {
 
     @ManyToOne(
         () => UserDeviceLocationEntity,
-        (userDeviceLocation) => userDeviceLocation.id,
+        (userDeviceLocation) => userDeviceLocation.deviceLocation,
         { eager: true })
-    @JoinColumn({ name: 'deviceLocation_id' }
+    @JoinColumn({ name: 'deviceLocation' }
     )
     location: UserDeviceLocationEntity;
 

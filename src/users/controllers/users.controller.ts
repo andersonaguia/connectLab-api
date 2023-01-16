@@ -75,7 +75,7 @@ export class UsersController {
                     .withStatus(HttpStatus.NOT_FOUND)
                     .withBody({
                         statusCode: HttpStatus.NOT_FOUND,
-                        message: "deviceId is not found"
+                        message: "deviceId is not found or invalid local"
                     })
                     .build();
             } else if (result.id) {

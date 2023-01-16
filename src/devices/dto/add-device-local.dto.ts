@@ -1,7 +1,8 @@
-import { IsNotEmpty } from "class-validator";
-import { deviceLocals } from "../enum/locals.enum";
+import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 
-export class addDeviceLocalDTO{
-    @IsNotEmpty({message: "local cannot be empty"})
-    readonly local: deviceLocals;
+export class addDeviceLocalDTO {
+    @IsNotEmpty()
+    @MaxLength(30)
+    @IsString()
+    readonly local: string;
 }

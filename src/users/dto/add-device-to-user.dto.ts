@@ -7,8 +7,8 @@ export class addDeviceToUserDTO {
     readonly deviceId: number;
 
     @IsNotEmpty()
-    @IsEnum(deviceLocals)
-    readonly local: deviceLocals;
+    @IsString()
+    readonly local: string;
 
     @IsNotEmpty()
     @IsString()

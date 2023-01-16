@@ -33,11 +33,7 @@ export class AuthController {
                         message: 'Successful registration'
                     })
                     .build();
-            }
-            return new NestResponseBuilder()
-                .withStatus(HttpStatus.BAD_REQUEST)
-                .withBody(result)
-                .build();
+            }            
         }
         catch (error) {
             if (error.code === "23505") {
@@ -49,6 +45,13 @@ export class AuthController {
                     })
                     .build();
             }
+            return new NestResponseBuilder()
+                .withStatus(HttpStatus.BAD_REQUEST)
+                .withBody({
+                    code: error.code,
+                    detail: error.detail
+                })
+                .build();
         }
 
     }
