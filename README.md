@@ -23,22 +23,17 @@
 
 ## ⚙️ Funcionalidades
 
-- [x] Cadastrar motoristas
-- [x] Realizar busca de forma paginada ou por parte do nome do motorista
-- [x] Realizar busca pelo cpf do motorista
-- [x] Editar dados do motorista
-- [x] Bloquear/Desbloquear motorista
-- [x] Deletar motorista
-- [x] Cadastrar passageiros
-- [x] Realizar busca de forma paginada ou por parte do nome do passageiro
-- [x] Realizar busca pelo cpf do passageiro
-- [x] Editar dados do passageiro
-- [x] Deletar passageiro
-- [x] Cadastrar nova viagem
-- [x] Realizar busca de forma paginada e pelo status da viagem
-- [x] Realizar busca pelo id da viagem
-- [x] Realizar busca das viagens próximas
-- [x] Atualizar status de uma viagem
+- [x] Buscar todos os dispositivos disponíveis para vincular
+- [x] Adicionar novo dispositivo para vincular
+- [x] Criar usuários
+- [x] Realizar login
+- [x] Adicionar/vincular dispositivo ao usuário
+- [x] Alterar senha para acesso do usuário
+- [x] Alterar o status do dispositivo do usuário
+- [x] Buscar os dados de perfil do usuário
+- [x] Buscar dispositivo do usuário pelo id
+- [x] Excluir um dispositivo do usuário
+- [x] Buscar todos os dispositivos do usuário com filtro por local e paginação
 ---
 
 ## 🚀 Como executar o projeto
@@ -56,7 +51,7 @@ npm i -g @nestjs/cli
 ### 🎲 Rodando o Projeto
 
 ```bash
-$ git clone https://github.com/andersonaguia/labcar-api.git
+$ git clone https://github.com/andersonaguia/connectLab-api.git
 
 $ npm install
 
@@ -70,10 +65,14 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## 🧭 Documentação
-Após rodar o projeto clique no botão abaixo para acessar a documentação via swagger:
+## 🧭 Funcionamento dos endpoints
+Importar o arquivo 
 
-# [![Swagger Badge](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white&link=[https://swagger.io/](http://localhost:3000/api))](http://localhost:3000/api)
+## 🧭 Criar usuário
+
+
+
+
 
 ---
 
@@ -91,8 +90,6 @@ Após rodar o projeto clique no botão abaixo para acessar a documentação via 
 
 [![Insomnia Badge](
 https://img.shields.io/badge/Insomnia-5849be?style=for-the-badge&logo=Insomnia&logoColor=white&link=https://insomnia.rest/)](https://insomnia.rest/)
-
-[![Swagger Badge](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white&link=https://swagger.io/)](https://swagger.io/)
 
 [![Prettier Badge](https://img.shields.io/badge/prettier-1A2C34?style=for-the-badge&logo=prettier&logoColor=F7BA3E&link=https://prettier.io/)](https://prettier.io/)
 
