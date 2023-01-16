@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { DevicesService } from '../services/devices.service';
 import { CreateDeviceDTO } from '../dto/create-device.dto';
-import { UpdateDeviceDto } from '../dto/update-device.dto';
 import { JwtAuthGuard } from 'src/core/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/core/auth/guards/roles/roles.guard';
 import { Roles } from 'src/core/auth/guards/decorators/roles.decorator';

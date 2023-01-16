@@ -8,7 +8,6 @@ import { DeviceEntity } from 'src/devices/entities/device.entity';
 import { UserDeviceLocationEntity } from '../entities/user-devices-location.entity';
 import { userDeviceDetailDTO } from '../dto/user-device-detail.dto';
 import { UpdateUserDeviceDTO } from '../dto/update-user-device.dto';
-import { stat } from 'fs';
 import { DeviceDataDTO } from '../dto/device-data.dto';
 
 @Injectable()
@@ -52,10 +51,7 @@ export class UsersService {
 
         resolve(null);
       } catch (error) {
-        reject({
-          code: error.code,
-          detail: error.detail
-        });
+        reject(error);
       }
     })
   }
@@ -97,10 +93,7 @@ export class UsersService {
         resolve(null);
       } catch (error) {
         console.log("catch")
-        reject({
-          code: error.code,
-          detail: error.detail
-        })
+        reject(error)
       }
     })
   }
@@ -118,10 +111,7 @@ export class UsersService {
         resolve(null);
 
       } catch (error) {
-        reject({
-          code: error.code,
-          detail: error.detail
-        })
+        reject(error)
       }
     })
 
@@ -161,10 +151,7 @@ export class UsersService {
         }
         resolve(userDevices);
       } catch (error) {
-        reject({
-          code: error.code,
-          detail: error.detail
-        })
+        reject(error)
       }
     })
   }
@@ -222,10 +209,7 @@ export class UsersService {
         }
         resolve(affected)
       } catch (error) {
-        reject({
-          code: error.code,
-          detail: error.detail
-        })
+        reject(error)
       }
     })
   }
@@ -246,10 +230,7 @@ export class UsersService {
         }
         resolve(affected)
       } catch (error) {
-        reject({
-          code: error.code,
-          detail: error.detail
-        })
+        reject(error)
       }
     })
   }
