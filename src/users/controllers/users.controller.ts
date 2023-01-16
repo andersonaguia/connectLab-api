@@ -105,7 +105,9 @@ export class UsersController {
     @Get('/users/profile')
     async findUser(@Request() req: any) {
         try {
+
             const result = await this.usersService.findUser(req);
+
             if (result === null) {
                 return new NestResponseBuilder()
                     .withStatus(HttpStatus.NOT_FOUND)
@@ -114,12 +116,11 @@ export class UsersController {
                         message: "User is not found"
                     })
                     .build();
-            } else if (result.id) {
-                return new NestResponseBuilder()
-                    .withStatus(HttpStatus.OK)
-                    .withBody(result)
-                    .build();
             }
+            return new NestResponseBuilder()
+                .withStatus(HttpStatus.OK)
+                .withBody(result)
+                .build();
         } catch (error) {
             return new NestResponseBuilder()
                 .withStatus(HttpStatus.BAD_REQUEST)
