@@ -69,7 +69,7 @@ $ npm run start:prod
 Importar o arquivo 
 
 ## 🧭 Criar usuário
-
+<img src="/public/images/create-user.png" width="200" alt="Imagem insomnia create user" />
 
 
 
