@@ -6,7 +6,7 @@ import { addDeviceToUserDTO } from '../dto/add-device-to-user.dto';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
 import { isArray, isNumber } from 'class-validator';
 import { DeviceDataDTO } from '../dto/device-data.dto';
-import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('users')
 @Controller()
@@ -22,6 +22,18 @@ export class UsersController {
         type: String,
     })
     @Get('/users/devicedetails/:id')
+    @ApiResponse({
+        status: 200,
+        description: 'Operação realizada com sucesso.'
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Bad request'
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'Not found'
+    })
     async findUserDeviceById(@Param('id') deviceId: number, @Request() req: any) {
         try {
             const result = await this.usersService.findUserDeviceById(+deviceId, req);
@@ -49,6 +61,14 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/users/alldevices')
+    @ApiResponse({
+        status: 200,
+        description: 'Operação realizada com sucesso.'
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Bad request'
+    })
     async findAllUserDevices(
         @Request() req,
         @Query('page') page: number = 1,
@@ -73,6 +93,18 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Post('/users/adddevice')
+    @ApiResponse({
+        status: 201,
+        description: 'Operação realizada com sucesso.'
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Bad request'
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'Not found'
+    })
     async addDeviceToUser(@Body() deviceData: addDeviceToUserDTO, @Request() req: any) {
         try {
             const result = await this.usersService.addDeviceToUser(deviceData, req);
@@ -109,6 +141,18 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/users/profile')
+    @ApiResponse({
+        status: 200,
+        description: 'Operação realizada com sucesso.'
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Bad request'
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'Not found'
+    })
     async findUser(@Request() req: any) {
         try {
 
@@ -144,6 +188,18 @@ export class UsersController {
         name: 'id',
         type: String,
     })
+    @ApiResponse({
+        status: 200,
+        description: 'Operação realizada com sucesso.'
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Bad request'
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'Not found'
+    })
     async removeUserDevice(@Param('id') id: number, @Request() req: any) {
         try {
             const result = await this.usersService.removeUserDevice(+id, req);
@@ -178,6 +234,18 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Patch('/users/updatestatusdevice')
+    @ApiResponse({
+        status: 200,
+        description: 'Operação realizada com sucesso.'
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Bad request'
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'Not found'
+    })
     async updateDeviceStatus(@Body() deviceData: DeviceDataDTO, @Request() req: any) {
         try {
             const result = await this.usersService.updateDeviceStatus(deviceData, req);

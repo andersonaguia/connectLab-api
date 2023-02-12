@@ -6,7 +6,7 @@ import { ChangePasswordDTO } from "../dto/change-password.dto";
 import { CredentialsDTO } from "../dto/credentials.dto";
 import { JwtAuthGuard } from "../guards/jwt-auth.guard";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiResponse, ApiTags } from "@nestjs/swagger";
 
 @ApiTags('auth')
 @Controller()
@@ -16,6 +16,22 @@ export class AuthController {
     ) { }
     
     @Post('/auth/signup')
+    @ApiResponse({
+        status: 201,
+        description: 'Operação realizada com sucesso.'
+    })
+    @ApiResponse({
+        status: 422,
+        description: 'Passwords do not match'
+    })
+    @ApiResponse({
+        status: 409,
+        description: 'Conflict'
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Bad request'
+    })
     async signUp(@Body(ValidationPipe) createUserDto: CreateUserDto) {
         try {
             const result = await this.authService.signUp(createUserDto);
@@ -58,8 +74,19 @@ export class AuthController {
 
     }
 
-
     @Post('/auth/signin')
+    @ApiResponse({
+        status: 401,
+        description: 'Unauthorized'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Success'
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Bad request'
+    })
     async signIn(
         @Body(ValidationPipe)
         credentialsDto: CredentialsDTO
@@ -87,6 +114,22 @@ export class AuthController {
 
     @UseGuards(JwtAuthGuard)
     @Patch('/auth/changepassword')
+    @ApiResponse({
+        status: 401,
+        description: 'Unauthorized'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Success'
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Bad request'
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'Not found'
+    })
     async changePassword(@Body() data: ChangePasswordDTO) {
         const result = await this.authService.changePassword(data);
         if (result === null) {

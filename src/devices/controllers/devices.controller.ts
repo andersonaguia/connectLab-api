@@ -7,7 +7,7 @@ import { Roles } from 'src/core/auth/guards/decorators/roles.decorator';
 import { UserRole } from 'src/users/enum/user.role';
 import { addDeviceLocalDTO } from '../dto/add-device-local.dto';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('devices')
 @Controller()
@@ -17,6 +17,14 @@ export class DevicesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Post('/devices')
+  @ApiResponse({
+    status: 201,
+    description: 'Operação realizada com sucesso.'
+  }) 
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request'
+  }) 
   async createDevice(@Body() device: CreateDeviceDTO) {
     return await this.devicesService.createDevice(device);
   }
@@ -24,6 +32,14 @@ export class DevicesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Post('/devices/locals')
+  @ApiResponse({
+    status: 201,
+    description: 'Operação realizada com sucesso.'
+  }) 
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request'
+  }) 
   async createDeviceLocal(@Body() local: addDeviceLocalDTO) {
     try {
       const result = await this.devicesService.createDeviceLocal(local);
@@ -61,6 +77,14 @@ export class DevicesController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/devices/all')
+  @ApiResponse({
+    status: 200,
+    description: 'Operação realizada com sucesso.'
+  }) 
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request.'
+  }) 
   async findAllDevices() {
     try {
       const result = await this.devicesService.findAllDevices();
@@ -83,6 +107,14 @@ export class DevicesController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/devices/alllocals')
+  @ApiResponse({
+    status: 200,
+    description: 'Operação realizada com sucesso.'
+  }) 
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request.'
+  }) 
   async findAllLocals() {
     try {
       const result = await this.devicesService.findAllLocals();
