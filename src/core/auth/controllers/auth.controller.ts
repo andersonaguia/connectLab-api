@@ -6,13 +6,15 @@ import { ChangePasswordDTO } from "../dto/change-password.dto";
 import { CredentialsDTO } from "../dto/credentials.dto";
 import { JwtAuthGuard } from "../guards/jwt-auth.guard";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags('auth')
 @Controller()
 export class AuthController {
     constructor(
         private readonly authService: AuthService
     ) { }
-
+    
     @Post('/auth/signup')
     async signUp(@Body(ValidationPipe) createUserDto: CreateUserDto) {
         try {

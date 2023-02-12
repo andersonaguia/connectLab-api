@@ -7,7 +7,9 @@ import { Roles } from 'src/core/auth/guards/decorators/roles.decorator';
 import { UserRole } from 'src/users/enum/user.role';
 import { addDeviceLocalDTO } from '../dto/add-device-local.dto';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('devices')
 @Controller()
 export class DevicesController {
   constructor(private readonly devicesService: DevicesService) { }

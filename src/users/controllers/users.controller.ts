@@ -6,7 +6,9 @@ import { addDeviceToUserDTO } from '../dto/add-device-to-user.dto';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
 import { isArray, isNumber } from 'class-validator';
 import { DeviceDataDTO } from '../dto/device-data.dto';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller()
 export class UsersController {
     constructor(
@@ -15,6 +17,10 @@ export class UsersController {
     ) { }
 
     @UseGuards(JwtAuthGuard)
+    @ApiParam({
+        name: 'id',
+        type: String,
+    })
     @Get('/users/devicedetails/:id')
     async findUserDeviceById(@Param('id') deviceId: number, @Request() req: any) {
         try {
@@ -134,6 +140,10 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Delete('/users/delete/:id')
+    @ApiQuery({
+        name: 'id',
+        type: String,
+    })
     async removeUserDevice(@Param('id') id: number, @Request() req: any) {
         try {
             const result = await this.usersService.removeUserDevice(+id, req);
