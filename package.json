@@ -1,7 +1,7 @@
 {
   "name": "connect-lab-api",
   "version": "0.0.1",
-  "description": "",
+  "description": "Api para gerenciamento de dispositivos IOT",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
@@ -33,6 +33,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/swagger": "^6.2.1",
     "@nestjs/typeorm": "^9.0.1",
     "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.1",
