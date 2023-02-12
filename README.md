@@ -69,6 +69,8 @@ $ npm run start:prod
 
 Importar o arquivo insomnia.json contido na pasta public/insomnia no [Insomnia](https://insomnia.rest/download).
 
+Se preferir, você pode acessar a documentação via [Swagger](http://localhost:3000/api-docs)
+
 ## Preparação dos endpoints
 
 ### 1 - Criar usuário com privilégio de administrador (http://localhost:3000/auth/signup)
