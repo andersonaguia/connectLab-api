@@ -41,8 +41,24 @@
 ### Pré-requisitos
 
 Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:
-[Git](https://git-scm.com), [NodeJS](https://nodejs.org/en/), [NestJS](https://nestjs.com/), [Insomnia](https://insomnia.rest/download).
-Além disto é bom ter um editor para trabalhar com o código como o [VSCode](https://code.visualstudio.com/)
+[Git](https://git-scm.com), [NodeJS](https://nodejs.org/en/), [NestJS](https://nestjs.com/), [Insomnia](https://insomnia.rest/download), [Postgres](https://www.postgresql.org/).
+Além disto é bom ter um editor para trabalhar com o código como o [VSCode](https://code.visualstudio.com/).
+
+### Configurando o banco de dados
+
+Após a instalação do Postgres você deverá criar um database com o nome "connectlab" ou outro de sua preferência.
+
+### Fazendo download do projeto
+
+Abra um terminal no VSCode e insira o comando abaixo
+
+```bash
+$ git clone https://github.com/andersonaguia/connectLab-api.git
+```
+
+### Configurando variáveis de ambiente
+
+Para configurar as variáveis de ambiente você deverá renomear o arquivo ".example.env" contido na pasta raiz do projeto para ".env" e alterar os dados de acordo com as suas informações de acesso ao Postgres.
 
 ### Instalação do NestJS
 ```bash
@@ -51,9 +67,12 @@ npm i -g @nestjs/cli
 ### 🎲 Rodando o Projeto
 
 ```bash
-$ git clone https://github.com/andersonaguia/connectLab-api.git
 
+# install dependencies
 $ npm install
+
+# run the migrations
+$ npm run migration:run
 
 # development
 $ npm run start
@@ -69,7 +88,7 @@ $ npm run start:prod
 
 Importar o arquivo insomnia.json contido na pasta public/insomnia no [Insomnia](https://insomnia.rest/download).
 
-Se preferir, você pode acessar a documentação via [Swagger](http://localhost:3000/api-docs)
+Se preferir, após rodar o projeto você pode acessar os endpoints via [Swagger](http://localhost:3000/api-docs)
 
 ## Preparação dos endpoints
 
