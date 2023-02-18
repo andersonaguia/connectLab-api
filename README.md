@@ -250,7 +250,7 @@ https://img.shields.io/badge/Insomnia-5849be?style=for-the-badge&logo=Insomnia&l
 
 [![Prettier Badge](https://img.shields.io/badge/prettier-1A2C34?style=for-the-badge&logo=prettier&logoColor=F7BA3E&link=https://prettier.io/)](https://prettier.io/)
 
-[![PostgresBadge](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/"{rel='nofollow'}")
+[![PostgresBadge](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/{rel='nofollow'})
 
 ## 🦸 Autor
  <b>Anderson Aguiar</b>🚀
