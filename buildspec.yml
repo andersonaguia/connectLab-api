@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Instalando pacotes do npm...
+      - npm install
+  build:
+    commands:
+      - echo Criando build do projeto...
+      - npm run build
+  post_build:
+    commands:
+      - echo Removendo arquivos desnecessários...
+      - rm -rf node_modules/
+
+artifacts:
+  base-directory: '.'
+  files:
+    - '**/*'
