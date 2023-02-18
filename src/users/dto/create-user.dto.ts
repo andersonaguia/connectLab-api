@@ -58,6 +58,6 @@ export class CreateUserDto {
   @ApiProperty({ name: 'address', example: UserAddressDTO, })
   readonly address: UserAddressDTO;
 
-  @ApiProperty({ name: 'role', example: UserRole, })
+  @ApiProperty({ name: 'role', example: 'admin', })
   readonly role: UserRole;
 }

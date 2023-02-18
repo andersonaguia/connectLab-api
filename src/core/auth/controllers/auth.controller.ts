@@ -6,7 +6,7 @@ import { ChangePasswordDTO } from "../dto/change-password.dto";
 import { CredentialsDTO } from "../dto/credentials.dto";
 import { JwtAuthGuard } from "../guards/jwt-auth.guard";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
-import { ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 @ApiTags('auth')
 @Controller()
@@ -114,6 +114,7 @@ export class AuthController {
 
     @UseGuards(JwtAuthGuard)
     @Patch('/auth/changepassword')
+    @ApiBearerAuth('Authorization')
     @ApiResponse({
         status: 401,
         description: 'Unauthorized'
@@ -131,6 +132,7 @@ export class AuthController {
         description: 'Not found'
     })
     async changePassword(@Body() data: ChangePasswordDTO) {
+        console.log("entered")
         const result = await this.authService.changePassword(data);
         if (result === null) {
             return new NestResponseBuilder()

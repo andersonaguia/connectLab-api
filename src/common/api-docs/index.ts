@@ -13,6 +13,16 @@ export const setupApiDocs = (app: INestApplication): void => {
         .setTitle(SWAGGER_API_NAME)
         .setDescription(SWAGGER_API_DESCRIPTION)
         .setVersion(SWAGGER_API_VERSION)
+        .addBearerAuth({
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT', 
+            name: 'Authorization',
+            description: 'Enter JWT token',
+            in: 'header',
+        },
+            'Authorization',
+        )
         .build();
 
     const document = SwaggerModule.createDocument(app, config);

@@ -6,7 +6,7 @@ import { addDeviceToUserDTO } from '../dto/add-device-to-user.dto';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
 import { isArray, isNumber } from 'class-validator';
 import { DeviceDataDTO } from '../dto/device-data.dto';
-import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('users')
 @Controller()
@@ -17,6 +17,7 @@ export class UsersController {
     ) { }
 
     @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth('Authorization')
     @ApiParam({
         name: 'id',
         type: String,
@@ -61,6 +62,7 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/users/alldevices')
+    @ApiBearerAuth('Authorization')
     @ApiResponse({
         status: 200,
         description: 'Operação realizada com sucesso.'
@@ -93,6 +95,7 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Post('/users/adddevice')
+    @ApiBearerAuth('Authorization')
     @ApiResponse({
         status: 201,
         description: 'Operação realizada com sucesso.'
@@ -141,6 +144,7 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/users/profile')
+    @ApiBearerAuth('Authorization')
     @ApiResponse({
         status: 200,
         description: 'Operação realizada com sucesso.'
@@ -184,6 +188,7 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Delete('/users/delete/:id')
+    @ApiBearerAuth('Authorization')
     @ApiQuery({
         name: 'id',
         type: String,
@@ -234,6 +239,7 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Patch('/users/updatestatusdevice')
+    @ApiBearerAuth('Authorization')
     @ApiResponse({
         status: 200,
         description: 'Operação realizada com sucesso.'

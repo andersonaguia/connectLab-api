@@ -7,7 +7,7 @@ import { Roles } from 'src/core/auth/guards/decorators/roles.decorator';
 import { UserRole } from 'src/users/enum/user.role';
 import { addDeviceLocalDTO } from '../dto/add-device-local.dto';
 import { NestResponseBuilder } from 'src/core/http/nest-response-builder';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('devices')
 @Controller()
@@ -17,6 +17,7 @@ export class DevicesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Post('/devices')
+  @ApiBearerAuth('Authorization')
   @ApiResponse({
     status: 201,
     description: 'Operação realizada com sucesso.'
@@ -32,6 +33,7 @@ export class DevicesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Post('/devices/locals')
+  @ApiBearerAuth('Authorization')
   @ApiResponse({
     status: 201,
     description: 'Operação realizada com sucesso.'
@@ -77,6 +79,7 @@ export class DevicesController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/devices/all')
+  @ApiBearerAuth('Authorization')
   @ApiResponse({
     status: 200,
     description: 'Operação realizada com sucesso.'
@@ -107,6 +110,7 @@ export class DevicesController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/devices/alllocals')
+  @ApiBearerAuth('Authorization')
   @ApiResponse({
     status: 200,
     description: 'Operação realizada com sucesso.'
