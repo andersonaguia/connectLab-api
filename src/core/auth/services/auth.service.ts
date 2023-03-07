@@ -12,7 +12,6 @@ import { TokenDTO } from '../dto/token.dto';
 
 @Injectable()
 export class AuthService {
-
     constructor(private jwtService: JwtService,
         @Inject('USER_REPOSITORY')
         private userRepository: Repository<UserEntity>,

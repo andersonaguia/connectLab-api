@@ -34,6 +34,7 @@ export class AuthController {
     })
     async signUp(@Body(ValidationPipe) createUserDto: CreateUserDto) {
         try {
+            console.log(createUserDto)
             const result = await this.authService.signUp(createUserDto);
             if (result === null) {
                 return new NestResponseBuilder()
